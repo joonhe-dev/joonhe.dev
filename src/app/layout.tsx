@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { baseMetadata } from "@/lib/site";
+import { baseMetadata, siteConfig } from "@/lib/site";
+import { generatePersonSchema, generateWebsiteSchema } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,19 +18,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = baseMetadata;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Joonhe",
-  url: "https://joonhe.dev",
-  sameAs: [
-    "https://twitter.com/joonhe_dev",
-    "https://github.com/joonhe-dev",
-  ],
-  jobTitle: "Full-Stack Developer & Indie Maker",
-  description:
-    "全栈开发者，独立创作者。分享 AI 辅助编程、Web 开发最佳实践、开源项目经验。",
-};
+const jsonLdSchemas = [
+  generateWebsiteSchema({
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+  }),
+  generatePersonSchema({}),
+];
 
 export default function RootLayout({
   children,
@@ -42,10 +38,37 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        {/* Google Search Console 验证 */}
+        {siteConfig.verification.google && (
+          <meta
+            name="google-site-verification"
+            content={siteConfig.verification.google}
+          />
+        )}
+        {/* Bing Webmaster 验证 */}
+        {siteConfig.verification.bing && (
+          <meta name="msvalidate.01" content={siteConfig.verification.bing} />
+        )}
+
+        {/* Preconnect 到第三方域名 */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
         />
+        <link rel="preconnect" href="https://vercel.live" />
+        <link rel="preconnect" href="https://va.vercel-scripts.com" />
+
+        {/* JSON-LD 结构化数据 */}
+        {jsonLdSchemas.map((schema, index) => (
+          <script
+            key={index}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
+
         {/* RSS feed link */}
         <link
           rel="alternate"

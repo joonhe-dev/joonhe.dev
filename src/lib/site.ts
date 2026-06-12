@@ -11,8 +11,41 @@ export const siteConfig = {
   links: {
     twitter: "https://twitter.com/joonhe_dev",
     github: "https://github.com/joonhe-dev",
+    rss: "https://joonhe.dev/feed.xml",
   },
-};
+  social: {
+    twitter: "https://twitter.com/joonhe_dev",
+    github: "https://github.com/joonhe-dev",
+    linkedin: "https://linkedin.com/in/joonhe-dev",
+    email: "mailto:hello@joonhe.dev",
+  },
+  verification: {
+    google: "", // TODO: 替换为 Google Search Console 验证码
+    bing: "", // TODO: 替换为 Bing Webmaster 验证码
+  },
+  categories: [
+    {
+      id: "ai-programming",
+      name: "AI 编程",
+      description: "AI 辅助编程实战经验与技巧",
+    },
+    {
+      id: "web-development",
+      name: "Web 开发",
+      description: "Web 开发最佳实践与技术分享",
+    },
+    {
+      id: "open-source",
+      name: "开源",
+      description: "开源项目经验与工具链搭建",
+    },
+    {
+      id: "remote-work",
+      name: "远程工作",
+      description: "远程工作者效率工具与心得",
+    },
+  ],
+} as const;
 
 export const baseMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -73,5 +106,3 @@ export const baseMetadata: Metadata = {
     canonical: siteConfig.url,
   },
 };
-
-

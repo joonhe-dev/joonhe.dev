@@ -1,0 +1,8 @@
+# ads.txt
+# 此文件用于声明广告合作伙伴关系。
+# 未来接入广告平台（如 Google AdSense）时，将在此添加授权声明。
+#
+# 格式示例（Google AdSense）：
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+#
+# 当前暂无广告合作，此文件为占位文件。

@@ -1,8 +1,34 @@
 import { MetadataRoute } from "next";
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join } from "path";
+
+const baseUrl = "https://joonhe.dev";
+const blogDir = join(process.cwd(), "src/content/blog");
+
+interface BlogPostMeta {
+  slug: string;
+  lastModified: Date;
+}
+
+function getBlogPosts(): BlogPostMeta[] {
+  try {
+    const files = readdirSync(blogDir).filter((f) => f.endsWith(".mdx"));
+    return files.map((file) => {
+      const filePath = join(blogDir, file);
+      const stat = statSync(filePath);
+      const slug = file.replace(/\.mdx$/, "");
+      return {
+        slug,
+        lastModified: stat.mtime,
+      };
+    });
+  } catch {
+    // Fallback: if directory doesn't exist or can't be read
+    return [];
+  }
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://joonhe.dev";
-
   // 静态页面
   const staticPages = [
     {
@@ -31,45 +57,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // 博客文章
-  const blogPosts = [
-    {
-      url: `${baseUrl}/blog/ai-web-development-workflow`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/ai-prompt-engineering-web-dev`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/ai-tools-remote-developer`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/ai-assisted-programming-evolution`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/ai-code-review-practical-guide`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/open-source-ai-toolchain-guide`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-  ];
+  // 从 content/blog 目录动态读取文章列表
+  const blogPosts = getBlogPosts().map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.lastModified,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
   return [...staticPages, ...blogPosts];
 }
