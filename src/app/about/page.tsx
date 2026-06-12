@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site";
+import { generateSeoMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: `关于 ${siteConfig.author}`,
-};
+export const metadata: Metadata = generateSeoMeta({
+  title: "About - 关于 Joonhe",
+  description:
+    "8 年全栈开发经验的全栈开发者与独立创作者。从大厂到独立开发者，公开构建过程、分享 AI 辅助编程与 Web 开发实战经验。",
+  slug: "about",
+  keywords: ["全栈开发者", "独立开发者", "AI 编程", "开源", "远程工作"],
+});
 
 export default function AboutPage() {
   return (

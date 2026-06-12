@@ -3,7 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 import { formatDateLong } from "@/lib/date";
-import { generateSeoMeta } from "@/lib/seo";
+import {
+  generateSeoMeta,
+  generateBreadcrumbSchema,
+} from "@/lib/seo";
+import { siteConfig } from "@/lib/site";
 import fs from "fs";
 import path from "path";
 
@@ -329,6 +333,7 @@ export function generateMetadata({
     keywords: post.tags,
     publishedTime: post.date,
     tags: post.tags,
+    image: `${siteConfig.url}/og-image.png`,
   });
 }
 
@@ -344,8 +349,23 @@ export default function BlogPostPage({
   const content = readMdxContent(post.slug);
   if (!content) notFound();
 
+  // BreadcrumbList JSON-LD
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: siteConfig.url },
+    { name: "Blog", url: `${siteConfig.url}/blog` },
+    { name: post.title, url: `${siteConfig.url}/blog/${post.slug}` },
+  ]);
+
   return (
     <article className="max-w-3xl">
+      {/* BreadcrumbList JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       <Link
         href="/blog"
         className="mb-8 inline-flex text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
