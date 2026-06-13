@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag: tagParam } = await params;
   const tag = decodeURIComponent(tagParam);
   return generateSeoMeta({
-    title: `标签: ${tag} - AI 编程与 Web 开发`,
-    description: `浏览标签「${tag}」下的所有文章。`,
+    title: `Tag: ${tag} - AI Programming & Web Development`,
+    description: `Browse all posts tagged with "${tag}".`,
     slug: `blog/tags/${encodeURIComponent(tag)}`,
-    keywords: [tag, "AI 编程", "Web 开发"],
+    keywords: [tag, "AI Programming", "Web Development"],
   });
 }
 
@@ -42,24 +42,24 @@ export default async function TagPage({ params }: Props) {
           href="/blog"
           className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
         >
-          博客
+          Blog
         </Link>
         <span className="mx-2">/</span>
         <Link
           href="/blog/tags"
           className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
         >
-          标签
+          Tags
         </Link>
         <span className="mx-2">/</span>
         <span className="text-zinc-900 dark:text-zinc-100">{tag}</span>
       </nav>
 
       <h1 className="text-3xl font-bold tracking-tight">
-        标签: <span className="text-indigo-500">{tag}</span>
+        Tag: <span className="text-indigo-500">{tag}</span>
       </h1>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        共 {tagPosts.length} 篇文章
+        {tagPosts.length} {tagPosts.length === 1 ? "post" : "posts"}
       </p>
 
       <div className="mt-8 space-y-6">

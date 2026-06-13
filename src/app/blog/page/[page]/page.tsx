@@ -33,13 +33,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generateSeoMeta({
     title:
       pageNum === 1
-        ? "AI 编程与 Web 开发博客"
-        : `第 ${pageNum} 页 - AI 编程与 Web 开发博客`,
-    description: `全栈开发者 Joonhe 的博客。分享 AI 辅助编程实战经验、Web 开发最佳实践、开源项目心得。${
-      pageNum > 1 ? `第 ${pageNum} 页` : ""
+        ? "AI Programming & Web Development Blog"
+        : `Page ${pageNum} - AI Programming & Web Development Blog`,
+    description: `Full-stack developer Joonhe's blog. Sharing AI-assisted programming insights, web development best practices, and open-source project experience.${
+      pageNum > 1 ? ` Page ${pageNum}.` : ""
     }`,
     slug: pageNum === 1 ? "blog" : `blog/page/${pageNum}`,
-    keywords: ["AI 编程", "Web 开发", "前端开发", "全栈开发"],
+    keywords: ["AI Programming", "Web Development", "Frontend Development", "Full-Stack Development"],
   });
 }
 
@@ -58,16 +58,16 @@ export default async function BlogPagePage({ params }: Props) {
     <div>
       {/* SEO H1 */}
       <h1 className="text-3xl font-bold tracking-tight">
-        AI 编程与 Web 开发博客
+        AI Programming & Web Development Blog
         {pageNum > 1 && (
           <span className="text-lg font-normal text-zinc-500">
             {" "}
-            — 第 {pageNum} 页
+            — Page {pageNum}
           </span>
         )}
       </h1>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        全栈开发者 Joonhe 的博客。分享 AI 辅助编程实战经验、Web 开发最佳实践、开源项目心得。
+        Full-stack developer Joonhe&apos;s blog. Sharing AI-assisted programming insights, web development best practices, and open-source project experience.
       </p>
 
       {/* Post list */}
@@ -129,11 +129,11 @@ export default async function BlogPagePage({ params }: Props) {
               >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
-              上一页
+              Previous
             </Link>
           ) : (
             <span className="text-sm text-zinc-300 dark:text-zinc-600">
-              上一页
+              Previous
             </span>
           )}
         </div>
@@ -160,7 +160,7 @@ export default async function BlogPagePage({ params }: Props) {
               href={`/blog/page/${pageNum + 1}`}
               className="inline-flex items-center gap-1 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             >
-              下一页
+              Next
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -175,7 +175,7 @@ export default async function BlogPagePage({ params }: Props) {
             </Link>
           ) : (
             <span className="text-sm text-zinc-300 dark:text-zinc-600">
-              下一页
+              Next
             </span>
           )}
         </div>

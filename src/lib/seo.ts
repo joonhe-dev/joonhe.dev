@@ -147,7 +147,7 @@ export function generatePersonSchema(params: {
     url = siteConfig.url,
     sameAs = Object.values(siteConfig.links),
     jobTitle = "Full-Stack Developer & Indie Maker",
-    description = "全栈开发者，独立创作者。分享 AI 辅助编程、Web 开发最佳实践、开源项目经验。",
+    description = "Full-stack developer and indie maker. Sharing AI-assisted programming, web development best practices, and open-source project experience.",
     image,
   } = params;
 

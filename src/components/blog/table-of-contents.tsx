@@ -70,7 +70,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
       className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto"
     >
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        目录
+        On This Page
       </h2>
       <ul className="space-y-1.5 text-sm">
         {items.map((item) => (

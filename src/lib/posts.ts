@@ -81,27 +81,27 @@ export const posts: PostMeta[] = [
   },
   {
     slug: "keyboard-remapping-ctrl-win-swap",
-    title: "Ctrl 与 Win 键互换实战：跨平台开发者的键盘一致性指南",
+    title: "Ctrl and Win Key Swap: A Cross-Platform Developer's Guide to Keyboard Consistency",
     excerpt:
-      "在 macOS 和 Windows 之间切换，最痛苦的莫过于 Ctrl 和 Win 键的位置差异。本文从虚拟键码原理出发，详解 PowerToys Keyboard Manager 的配置方法，帮你找回统一的肌肉记忆。",
+      "Switching between macOS and Windows? The biggest pain is the Ctrl and Win key position mismatch. This article walks through virtual key code fundamentals and PowerToys Keyboard Manager configuration to restore your muscle memory.",
     date: "2026-06-14",
-    tags: ["开发实践", "效率", "Windows", "键盘映射"],
+    tags: ["Dev Practices", "Productivity", "Windows", "Keyboard Remapping"],
   },
   {
     slug: "powertoys-developer-productivity-toolbox",
-    title: "PowerToys 深度指南：Windows 开发者的效率工具箱",
+    title: "PowerToys Deep Dive: The Windows Developer's Productivity Toolbox",
     excerpt:
-      "大多数人装了 PowerToys 只用了 Keyboard Manager。但这个微软官方工具箱里藏着至少 6 个让开发者效率翻倍的模块——FancyZones 分屏、Run 快捷启动、AlwaysOnTop 置顶、Color Picker 取色……本文带你逐一解锁。",
+      "Most people install PowerToys and only use Keyboard Manager. But Microsoft's official toolkit hides at least 6 modules that double developer productivity — FancyZones window tiling, Run launcher, AlwaysOnTop, Color Picker, and more. Let's unlock them one by one.",
     date: "2026-06-16",
-    tags: ["开发者工具", "效率", "Windows", "PowerToys"],
+    tags: ["Developer Tools", "Productivity", "Windows", "PowerToys"],
   },
   {
     slug: "cross-platform-keyboard-consistency",
-    title: "跨平台键盘一致性策略：让肌肉记忆不再分裂",
+    title: "Cross-Platform Keyboard Consistency: Stop Splitting Your Muscle Memory",
     excerpt:
-      "在 macOS、Windows、Linux 三个系统间切换，键盘是最小却最持久的摩擦点。本文提出「固件层 + 系统层 + 应用层」三层一致性架构，帮你从硬件到软件实现全链路键位统一。",
+      "Switching between macOS, Windows, and Linux? Keyboard layout is the smallest yet most persistent friction point. This article proposes a three-layer consistency architecture — firmware, OS, and application — to unify your keybindings from hardware to software.",
     date: "2026-06-18",
-    tags: ["开发实践", "效率", "跨平台", "键盘映射"],
+    tags: ["Dev Practices", "Productivity", "Cross-Platform", "Keyboard Remapping"],
   },
 ];
 

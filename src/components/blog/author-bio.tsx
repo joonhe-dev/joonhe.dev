@@ -14,8 +14,8 @@ export function AuthorBio() {
             {siteConfig.author}
           </h3>
           <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            全栈开发者，独立创作者。专注 AI 辅助编程、Web 开发最佳实践、开源项目经验分享。
-            热爱用技术解决实际问题，追求简洁高效的代码。
+            Full-stack developer and indie maker. Focused on AI-assisted programming, web development best practices, and open-source project experience.
+            Passionate about solving real problems with technology, pursuing clean and efficient code.
           </p>
           <div className="mt-3 flex items-center gap-4">
             <Link
@@ -38,7 +38,7 @@ export function AuthorBio() {
               href="/about"
               className="text-sm text-zinc-500 transition-colors hover:text-indigo-500 dark:text-zinc-400 dark:hover:text-indigo-400"
             >
-              关于我 →
+              About me →
             </Link>
           </div>
         </div>

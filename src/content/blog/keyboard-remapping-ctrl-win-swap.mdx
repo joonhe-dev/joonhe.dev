@@ -1,97 +1,100 @@
 ---
-title: "Ctrl 与 Win 键互换实战：跨平台开发者的键盘一致性指南"
+title: "Ctrl and Win Key Swap in Practice: A Keyboard Consistency Guide for Cross-Platform Developers"
 slug: keyboard-remapping-ctrl-win-swap
-excerpt: "在 macOS 和 Windows 之间切换，最痛苦的莫过于 Ctrl 和 Win 键的位置差异。本文从虚拟键码原理出发，详解 PowerToys Keyboard Manager 的配置方法，帮你找回统一的肌肉记忆。"
+excerpt: "Switching between macOS and Windows, the most painful thing is the positional difference between the Ctrl and Win keys. Starting from virtual key code principles, this guide walks through PowerToys Keyboard Manager configuration to help you reclaim unified muscle memory."
 date: "2026-06-14"
-tags: ["开发实践", "效率", "Windows", "键盘映射"]
+tags: ["Dev Practices", "Productivity", "Windows", "Keyboard Remapping"]
 ---
 
-## 一场每天发生 200 次的失误
+## A Mistake That Happens 200 Times a Day
 
-白天在公司用 Windows，晚上回家用 macOS——这是很多开发者的日常。然后你就开始经历这种痛苦：
+Windows at work during the day, macOS at home at night — that's the daily routine for many developers. And then the suffering begins:
 
-- 想复制，按下了 `Win+C`，结果打开了聊天窗口
-- 想打开终端，按下了 `Ctrl+Space`，结果什么都没发生
-- 想切桌面，按下了 `Win+Tab`，结果打开了任务视图……等等，这个倒是对的
+- Want to copy, press `Win+C`, and a chat window opens instead
+- Want to open terminal, press `Ctrl+Space`, and nothing happens
+- Want to switch desktops, press `Win+Tab`, and Task View opens... wait, that one's actually correct
 
-问题不在你，在键盘布局。macOS 的 `Cmd` 键在空格旁边，Windows 的 `Win` 键也在空格旁边——但 `Cmd` 承担的是 `Ctrl` 的功能。**位置相同的键，功能不同；功能相同的键，位置不同。**
+The problem isn't you — it's the keyboard layout. macOS's `Cmd` key sits next to the spacebar, and so does Windows's `Win` key — but `Cmd` serves the function of `Ctrl`. **Same position, different function; same function, different position.**
 
-这篇文章不是简单的操作教程。我要从键盘输入的技术原理讲起，让你理解为什么这么做、怎么做、以及做完了会怎样。
+This article isn't a simple how-to guide. I'm going to start from the technical principles behind keyboard input, so you understand why you're doing this, how to do it, and what changes after you're done.
 
-## 为什么是 Ctrl 和 Win？
+## Why Ctrl and Win?
 
-### macOS vs Windows 修饰键布局对比
+### macOS vs Windows Modifier Key Layout Comparison
 
-| 功能 | macOS | Windows | 位置是否一致 |
-|------|-------|---------|-------------|
-| 复制 | `Cmd+C` | `Ctrl+C` | ❌ Cmd 在 Win 位置 |
-| 粘贴 | `Cmd+V` | `Ctrl+V` | ❌ 同上 |
-| 撤销 | `Cmd+Z` | `Ctrl+Z` | ❌ 同上 |
-| 保存 | `Cmd+S` | `Ctrl+S` | ❌ 同上 |
-| 搜索 | `Cmd+F` | `Ctrl+F` | ❌ 同上 |
-| 切应用 | `Cmd+Tab` | `Alt+Tab` | ❌ 完全不同 |
-| Spotlight | `Cmd+Space` | `Win+S` | ⚠️ 部分对应 |
+| Function | macOS | Windows | Same Position? |
+|----------|-------|---------|----------------|
+| Copy | `Cmd+C` | `Ctrl+C` | ❌ Cmd is at Win's position |
+| Paste | `Cmd+V` | `Ctrl+V` | ❌ Same as above |
+| Undo | `Cmd+Z` | `Ctrl+Z` | ❌ Same as above |
+| Save | `Cmd+S` | `Ctrl+S` | ❌ Same as above |
+| Find | `Cmd+F` | `Ctrl+F` | ❌ Same as above |
+| Switch App | `Cmd+Tab` | `Alt+Tab` | ❌ Completely different |
+| Spotlight | `Cmd+Space` | `Win+S` | ⚠️ Partial match |
 
-核心矛盾：**macOS 的 Cmd 键在物理位置上对应 Windows 的 Win 键，但功能上对应 Ctrl 键。**
+The core contradiction: **macOS's Cmd key physically corresponds to Windows's Win key position, but functionally corresponds to the Ctrl key.**
 
-这意味着，如果你在两个系统间频繁切换，你的左手小指每天都在做"上下横跳"——macOS 上 Cmd 在下，Windows 上 Ctrl 在下。
+This means if you switch between the two systems frequently, your left pinky is doing the "up-down shuffle" every day — Cmd is lower on macOS, Ctrl is lower on Windows.
 
-互换 Ctrl 和 Win 键，本质上是**让物理位置和功能位置重新对齐**。
+Swapping Ctrl and Win is essentially **realigning physical position with functional position**.
 
-### 你需要互换吗？
+### Should You Swap?
 
-| 场景 | 建议 |
-|------|------|
-| 只用 Windows | 不需要，保持默认 |
-| 只用 macOS | 不需要，保持默认 |
-| macOS 为主，偶尔用 Windows | **强烈建议**互换 |
-| Windows 为主，偶尔用 macOS | 不建议互换，会让 Windows 快捷键混乱 |
-| 双系统频繁切换 | **强烈建议**互换，统一肌肉记忆 |
+| Scenario | Recommendation |
+|----------|---------------|
+| Windows only | No need, keep defaults |
+| macOS only | No need, keep defaults |
+| Mostly macOS, occasional Windows | **Strongly recommended** to swap |
+| Mostly Windows, occasional macOS | Not recommended, will confuse Windows shortcuts |
+| Frequent switching between both | **Strongly recommended** to swap, unified muscle memory |
 
-## 键盘输入的技术原理
+## The Technical Principles Behind Keyboard Input
 
-理解按键重映射，先要理解按键从按下到生效经过了哪些环节。
+To understand key remapping, you first need to understand what happens from keypress to action.
 
-### 按键信号的传递链
+### The Keystroke Signal Chain
 
 ```
-物理按键按下
+Physical key pressed
     │
     ▼
-┌──────────┐    扫描码 (Scan Code)
-│ 键盘控制器 │ ──────────────────→
-└──────────┘    (硬件级，与布局无关)
-    │
-    ▼
-┌──────────┐    虚拟键码 (Virtual Key Code)
-│ Windows   │ ──────────────────→
-│ 键盘驱动   │    (系统级，与布局相关)
+┌──────────┐    Scan Code
+│ Keyboard  │ ──────────────────→
+│ Controller│    (Hardware level, layout-independent)
 └──────────┘
     │
     ▼
-┌──────────┐    WM_KEYDOWN / WM_KEYUP 消息
+┌──────────┐    Virtual Key Code
 │ Windows   │ ──────────────────→
-│ 消息队列   │    (应用级，携带 VK Code + 扫描码)
+│ Keyboard  │    (System level, layout-dependent)
+│ Driver    │
+└──────────┘
+    │
+    ▼
+┌──────────┐    WM_KEYDOWN / WM_KEYUP messages
+│ Windows   │ ──────────────────→
+│ Message   │    (Application level, carries VK Code + Scan Code)
+│ Queue     │
 └──────────┘
     │
     ▼
 ┌──────────┐
-│ 应用程序   │ → 执行对应操作
+│ Application│ → Execute corresponding action
 └──────────┘
 ```
 
-重映射的本质就是在某个环节拦截信号，把它替换成另一个键的信号。不同方案拦截的位置不同，效果也不同。
+The essence of remapping is intercepting the signal at some point in this chain and replacing it with another key's signal. Different solutions intercept at different points, and the effects differ accordingly.
 
-### 关键概念：扫描码 vs 虚拟键码
+### Key Concepts: Scan Code vs Virtual Key Code
 
-**扫描码（Scan Code）**：键盘硬件发出的原始信号。同一个物理按键，无论什么系统、什么布局，扫描码都是一样的。比如 Left Ctrl 的扫描码始终是 `0x1D`。
+**Scan Code**: The raw signal sent by the keyboard hardware. The same physical key always produces the same scan code regardless of the OS or layout. For example, Left Ctrl's scan code is always `0x1D`.
 
-**虚拟键码（Virtual Key Code, VK Code）**：Windows 将扫描码翻译成的高级标识。它受键盘布局影响——比如 DVORAK 布局下，同一个物理按键的 VK Code 可能不同。
+**Virtual Key Code (VK Code)**: The high-level identifier that Windows translates scan codes into. It's affected by keyboard layout — for example, under DVORAK layout, the same physical key may have a different VK Code.
 
-做按键重映射时，你需要知道的是：
+When doing key remapping, here's what you need to know:
 
-| 键 | 扫描码 (Hex) | 虚拟键码 (Dec) | 常量名 |
-|----|-------------|----------------|--------|
+| Key | Scan Code (Hex) | Virtual Key Code (Dec) | Constant Name |
+|-----|-----------------|------------------------|---------------|
 | Left Ctrl | 0x1D | 162 (0xA2) | VK_LCONTROL |
 | Right Ctrl | 0x1D (E0) | 163 (0xA3) | VK_RCONTROL |
 | Left Win | 0x5B (E0) | 91 (0x5B) | VK_LWIN |
@@ -101,77 +104,77 @@ tags: ["开发实践", "效率", "Windows", "键盘映射"]
 | Left Shift | 0x2A | 160 (0xA0) | VK_LSHIFT |
 | Esc | 0x01 | 27 (0x1B) | VK_ESCAPE |
 
-注意到一个细节：扩展键（Right Ctrl、Win 键等）的扫描码带有 `E0` 前缀，这是键盘控制器用来区分同功能左右键的方式。
+Notice one detail: extended keys (Right Ctrl, Win keys, etc.) have scan codes with the `E0` prefix — this is how the keyboard controller distinguishes between left and right keys of the same function.
 
-## 四种方案对比
+## Comparing Four Approaches
 
-| 方案 | 拦截层 | 是否需要安装 | 重启生效 | 可逆性 | 延迟 | 推荐度 |
-|------|--------|-------------|---------|--------|------|--------|
-| 注册表 Scancode Map | 驱动层 | ❌ | ✅ 需重启 | 需删注册表重启 | 零 | ⭐⭐ |
-| PowerToys KBM | 钩子层 | ✅ | ❌ 即时 | 一键关闭 | 极低 | ⭐⭐⭐⭐⭐ |
-| AutoHotkey | 钩子层 | ✅ | ❌ 即时 | 关闭脚本 | 低 | ⭐⭐⭐⭐ |
-| 可编程键盘固件 | 固件层 | ❌ | ❌ 即时 | 重新刷固件 | 零 | ⭐⭐⭐⭐⭐ |
+| Approach | Intercept Layer | Installation Required | Reboot Required | Reversibility | Latency | Recommendation |
+|----------|----------------|----------------------|-----------------|---------------|---------|----------------|
+| Registry Scancode Map | Driver | ❌ | ✅ Required | Delete registry + reboot | Zero | ⭐⭐ |
+| PowerToys KBM | Hook | ✅ | ❌ Instant | One-click disable | Negligible | ⭐⭐⭐⭐⭐ |
+| AutoHotkey | Hook | ✅ | ❌ Instant | Close script | Low | ⭐⭐⭐⭐ |
+| Programmable Keyboard Firmware | Firmware | ❌ | ❌ Instant | Re-flash firmware | Zero | ⭐⭐⭐⭐⭐ |
 
-### 为什么推荐 PowerToys？
+### Why PowerToys?
 
-1. **微软官方出品**——和 Windows 的兼容性最好
-2. **零代码配置**——GUI 操作，不需要写脚本
-3. **即时生效**——不需要重启
-4. **一键还原**——关闭 Keyboard Manager 就恢复原样
-5. **支持快捷键重映射**——不只是单键，还能映射组合键
-6. **配置文件可直接编辑**——批量导入导出很方便
+1. **Made by Microsoft** — best Windows compatibility
+2. **Zero-code configuration** — GUI operation, no scripting needed
+3. **Instant effect** — no reboot required
+4. **One-click restore** — disable Keyboard Manager and everything's back to normal
+5. **Supports shortcut remapping** — not just single keys, but key combinations too
+6. **Config file is directly editable** — easy batch import/export
 
-## 实战：PowerToys Keyboard Manager 配置
+## Hands-On: PowerToys Keyboard Manager Configuration
 
-### Step 1：安装 PowerToys
+### Step 1: Install PowerToys
 
 ```powershell
-# 推荐方式：winget 一行搞定
+# Recommended: winget one-liner
 winget install Microsoft.PowerToys --accept-package-agreements --accept-source-agreements
 
-# 或者从 GitHub Releases 下载安装包
+# Or download the installer from GitHub Releases
 # https://github.com/microsoft/PowerToys/releases
 ```
 
-安装完成后，PowerToys 会自动启动并在系统托盘显示图标。
+After installation, PowerToys will start automatically and show an icon in the system tray.
 
-### Step 2：启用 Keyboard Manager
+### Step 2: Enable Keyboard Manager
 
-两种方式任选：
+Choose either method:
 
-**方式 A：通过 GUI**
-1. 右键系统托盘 PowerToys 图标 → Settings
-2. 左侧选择 Keyboard Manager
-3. 打开 Enable Keyboard Manager 开关
+**Method A: Via GUI**
+1. Right-click the PowerToys system tray icon → Settings
+2. Select Keyboard Manager from the left sidebar
+3. Toggle "Enable Keyboard Manager" on
 
-**方式 B：通过配置文件**（适合远程/批量操作）
+**Method B: Via config file** (handy for remote/batch operations)
 
 ```powershell
-# 先关闭 PowerToys
+# Close PowerToys first
 Stop-Process -Name "PowerToys" -Force
 
-# 修改 settings.json 启用 Keyboard Manager
-# 文件路径：$env:LOCALAPPDATA\Microsoft\PowerToys\settings.json
-# 将 "Keyboard Manager":false 改为 "Keyboard Manager":true
+# Edit settings.json to enable Keyboard Manager
+# File path: $env:LOCALAPPDATA\Microsoft\PowerToys\settings.json
+# Change "Keyboard Manager":false to "Keyboard Manager":true
 ```
 
-### Step 3：配置按键互换
+### Step 3: Configure the Key Swap
 
-**方式 A：通过 GUI**
-1. 打开 Keyboard Manager → 点击 "Remap a key"
-2. 点击 ➕ 添加映射
-3. 第一行：Select `Left Ctrl` → To send `Left Win`
-4. 第二行：Select `Left Win` → To send `Left Ctrl`
-5. 点击 OK 保存
+**Method A: Via GUI**
+1. Open Keyboard Manager → click "Remap a key"
+2. Click ➕ to add a mapping
+3. First row: Select `Left Ctrl` → To send `Left Win`
+4. Second row: Select `Left Win` → To send `Left Ctrl`
+5. Click OK to save
 
-**方式 B：直接编辑配置文件**（我推荐的方式，更精确）
+**Method B: Edit the config file directly** (my preferred method — more precise)
 
-配置文件路径：
+Config file path:
 ```
 %LOCALAPPDATA%\Microsoft\PowerToys\Keyboard Manager\default.json
 ```
 
-写入以下内容：
+Write the following content:
 
 ```json
 {
@@ -205,18 +208,18 @@ Stop-Process -Name "PowerToys" -Force
 }
 ```
 
-这里的数字就是前面提到的虚拟键码：
+The numbers here are the virtual key codes mentioned earlier:
 
-- `162` = `VK_LCONTROL`（左 Ctrl）
-- `91` = `VK_LWIN`（左 Win）
-- `163` = `VK_RCONTROL`（右 Ctrl）
-- `92` = `VK_RWIN`（右 Win）
+- `162` = `VK_LCONTROL` (Left Ctrl)
+- `91` = `VK_LWIN` (Left Win)
+- `163` = `VK_RCONTROL` (Right Ctrl)
+- `92` = `VK_RWIN` (Right Win)
 
-四条映射实现了**左右 Ctrl 和左右 Win 的完整互换**。
+These four mappings achieve a **complete swap of both left and right Ctrl and Win keys**.
 
-### 配置文件格式说明
+### Config File Format Explained
 
-PowerToys Keyboard Manager 的 `default.json` 格式有几个要点：
+PowerToys Keyboard Manager's `default.json` format has a few key points:
 
 ```json
 {
@@ -248,83 +251,83 @@ PowerToys Keyboard Manager 的 `default.json` 格式有几个要点：
 }
 ```
 
-- `originalKeys` / `newRemapKeys`：使用虚拟键码的字符串形式
-- 多个键用分号 `;` 分隔（用于快捷键映射）
-- `remapKeys` 只能映射单键，`remapShortcuts` 至少需要两个键码
-- `appSpecific` 可以指定只在某个应用中生效的映射
-- `targetApp` 使用进程名，如 `msedge.exe`、`Code.exe`
+- `originalKeys` / `newRemapKeys`: use the string form of virtual key codes
+- Multiple keys are separated by semicolons `;` (for shortcut mappings)
+- `remapKeys` can only map single keys; `remapShortcuts` requires at least two key codes
+- `appSpecific` lets you specify mappings that only take effect in a particular app
+- `targetApp` uses the process name, e.g. `msedge.exe`, `Code.exe`
 
-### Step 4：验证生效
+### Step 4: Verify It's Working
 
-配置保存后立即生效，无需重启。你可以：
+The config takes effect immediately after saving — no reboot needed. You can test:
 
-1. 按下 `Win` 键（现在映射为 Ctrl）→ 应该不会打开开始菜单
-2. 按下 `Ctrl` 键（现在映射为 Win）→ 应该会打开开始菜单
-3. 按下 `Ctrl+C` → 现在相当于 `Win+C`，打开聊天
-4. 按下 `Win+C` → 现在相当于 `Ctrl+C`，复制
+1. Press `Win` (now mapped to Ctrl) → the Start menu should NOT open
+2. Press `Ctrl` (now mapped to Win) → the Start menu SHOULD open
+3. Press `Ctrl+C` → now acts as `Win+C`, opens Chat
+4. Press `Win+C` → now acts as `Ctrl+C`, copies
 
-## 互换后的注意事项
+## Post-Swap Considerations
 
-### 不可重映射的快捷键
+### Non-Remappable Shortcuts
 
-Windows 系统保留了部分快捷键，即使做了重映射也不会生效：
+Windows reserves certain shortcuts that won't be affected by remapping:
 
-| 快捷键 | 功能 | 原因 |
-|--------|------|------|
-| `Win+L` | 锁屏 | 系统级安全快捷键 |
-| `Ctrl+Alt+Del` | 安全桌面 | 内核级处理 |
-| `Win+G` | Xbox Game Bar | 可在设置中关闭 |
+| Shortcut | Function | Reason |
+|----------|----------|--------|
+| `Win+L` | Lock screen | System-level security shortcut |
+| `Ctrl+Alt+Del` | Secure Desktop | Kernel-level handling |
+| `Win+G` | Xbox Game Bar | Can be disabled in Settings |
 
-> 💡 **技巧**：`Win+G` 经常会"劫持"你的重映射。如果你不用 Xbox Game Bar，在 Windows 设置 → 游戏 → Xbox Game Bar 中关闭它。
+> 💡 **Tip**: `Win+G` often "hijacks" your remapping. If you don't use Xbox Game Bar, disable it in Windows Settings → Gaming → Xbox Game Bar.
 
-### 重映射的局限性
+### Remapping Limitations
 
-1. **PowerToys 必须保持运行**——关闭后映射失效
-2. **UAC 弹窗中不生效**——提权对话框使用安全桌面
-3. **BIOS/启动界面不生效**——此时 Windows 还没加载
-4. **远程桌面可能冲突**——RDP 有自己的键盘重定向逻辑
+1. **PowerToys must stay running** — mappings stop working when closed
+2. **UAC dialogs are unaffected** — elevation prompts use the Secure Desktop
+3. **BIOS/boot screens are unaffected** — Windows hasn't loaded yet at that point
+4. **Remote Desktop may conflict** — RDP has its own keyboard redirection logic
 
-### 如果出了问题
+### If Something Goes Wrong
 
-最坏的情况：映射后键盘操作混乱，无法正常使用。
+Worst case: after remapping, keyboard operations are chaotic and unusable.
 
-**紧急恢复方法**：
-1. 用鼠标点击 PowerToys 系统托盘图标 → Settings → Keyboard Manager → 关闭
-2. 或者直接用鼠标打开任务管理器，结束 `PowerToys.KeyboardManager.exe` 进程
-3. 如果连鼠标都点不了：`Ctrl+Alt+Del` 仍然可用（系统保留），从安全桌面重启
+**Emergency recovery**:
+1. Use the mouse to click the PowerToys system tray icon → Settings → Keyboard Manager → disable it
+2. Or use the mouse to open Task Manager and kill the `PowerToys.KeyboardManager.exe` process
+3. If you can't even click: `Ctrl+Alt+Del` still works (system-reserved), restart from the Secure Desktop
 
-## 对开发者的实际帮助
+## Real Benefits for Developers
 
-### 肌肉记忆统一
+### Unified Muscle Memory
 
-互换后，macOS 和 Windows 的修饰键操作变成这样：
+After swapping, modifier key operations on macOS and Windows look like this:
 
-| 操作 | macOS | Windows（互换后） | 左手动作 |
-|------|-------|-----------------|---------|
-| 复制 | `Cmd+C` | `Win+C` → `Ctrl` | ✅ 相同位置 |
-| 粘贴 | `Cmd+V` | `Win+V` → `Ctrl` | ✅ 相同位置 |
-| 撤销 | `Cmd+Z` | `Win+Z` → `Ctrl` | ✅ 相同位置 |
-| 切应用 | `Cmd+Tab` | `Alt+Tab` | ⚠️ 仍不同 |
+| Action | macOS | Windows (After Swap) | Left Hand Motion |
+|--------|-------|---------------------|-----------------|
+| Copy | `Cmd+C` | `Win+C` → `Ctrl` | ✅ Same position |
+| Paste | `Cmd+V` | `Win+V` → `Ctrl` | ✅ Same position |
+| Undo | `Cmd+Z` | `Win+Z` → `Ctrl` | ✅ Same position |
+| Switch App | `Cmd+Tab` | `Alt+Tab` | ⚠️ Still different |
 
-大部分常用操作的位置都统一了，不再需要每天切换"键盘模式"。
+Most common operations are now positionally unified — no more daily "keyboard mode" switching.
 
-### 终端体验的提升
+### Improved Terminal Experience
 
-如果你在 Windows 上用 WSL 或 Terminal，互换后的好处更大：
+If you use WSL or Terminal on Windows, the benefits of swapping are even greater:
 
 ```bash
-# 互换前：在 Windows 终端中按 Ctrl+C 发送中断信号
-# 但肌肉记忆会让你按 Win+C（互换前的 Ctrl 位置）
+# Before swap: pressing Ctrl+C in Windows Terminal sends an interrupt signal
+# But your muscle memory makes you press Win+C (the pre-swap Ctrl position)
 
-# 互换后：Ctrl 键在 Win 键位置
-# 按 Win+C → 实际发送 Ctrl+C → 终端中断信号 ✅
+# After swap: Ctrl key is at the Win key position
+# Press Win+C → actually sends Ctrl+C → terminal interrupt signal ✅
 ```
 
-## 可复用场景：更多键位重映射
+## Reusable Scenarios: More Key Remapping
 
-掌握了 PowerToys Keyboard Manager 的配置方法，你还可以做这些：
+Now that you've mastered PowerToys Keyboard Manager configuration, you can do more:
 
-### 常用键位映射模板
+### Common Key Mapping Template
 
 ```json
 {
@@ -339,37 +342,37 @@ Windows 系统保留了部分快捷键，即使做了重映射也不会生效：
 }
 ```
 
-这把 `Caps Lock`（VK 20）映射为 `Esc`（VK 27）——Vim 用户的经典配置。
+This maps `Caps Lock` (VK 20) to `Esc` (VK 27) — a classic Vim user configuration.
 
-### 更多场景速查表
+### More Scenarios Quick Reference
 
-| 场景 | originalKeys | newRemapKeys | 说明 |
-|------|-------------|-------------|------|
-| Mac 键盘在 Windows 上 | `"91"` | `"162"` | Win → LCtrl |
-| Caps Lock → Esc | `"20"` | `"27"` | Vim 用户必备 |
-| Caps Lock → Ctrl | `"20"` | `"162"` | Emacs 用户 / 小指友好 |
-| 右 Alt → Fn | `"165"` | 自定义 | 笔记本紧凑键盘 |
-| 禁用 Win 键 | `"91"` | `"0"` | 游戏防误触 |
+| Scenario | originalKeys | newRemapKeys | Notes |
+|----------|-------------|-------------|-------|
+| Mac keyboard on Windows | `"91"` | `"162"` | Win → LCtrl |
+| Caps Lock → Esc | `"20"` | `"27"` | Essential for Vim users |
+| Caps Lock → Ctrl | `"20"` | `"162"` | Emacs users / pinky-friendly |
+| Right Alt → Fn | `"165"` | Custom | Compact laptop keyboards |
+| Disable Win key | `"91"` | `"0"` | Prevent accidental presses in games |
 
-## 后续推荐
+## What's Next
 
-### 进阶工具
+### Advanced Tools
 
-| 工具 | 平台 | 特点 | 适合谁 |
-|------|------|------|--------|
-| **Karabiner-Elements** | macOS | 最强大的 macOS 键盘定制工具 | macOS 重度用户 |
-| **AutoHotkey** | Windows | 脚本化键盘定制，可做复杂逻辑 | 高级用户 |
-| **QMK / VIA** | 跨平台 | 可编程键盘固件，硬件级映射 | 有可编程键盘的用户 |
-| **SharpKeys** | Windows | 注册表级映射，重启生效 | 只需简单映射的用户 |
-| **keyd** | Linux | 轻量级键盘重映射守护进程 | Linux 用户 |
+| Tool | Platform | Highlights | Best For |
+|------|----------|------------|----------|
+| **Karabiner-Elements** | macOS | Most powerful macOS keyboard customization tool | Heavy macOS users |
+| **AutoHotkey** | Windows | Scriptable keyboard customization with complex logic | Advanced users |
+| **QMK / VIA** | Cross-platform | Programmable keyboard firmware, hardware-level mapping | Users with programmable keyboards |
+| **SharpKeys** | Windows | Registry-level mapping, requires reboot | Users who only need simple mapping |
+| **keyd** | Linux | Lightweight keyboard remapping daemon | Linux users |
 
-### 系列预告
+### Series Preview
 
-这是「跨平台键盘适配」系列的第一篇。接下来的文章会深入：
+This is the first article in the "Cross-Platform Keyboard Adaptation" series. Upcoming posts will dive into:
 
-- **Part 2**：PowerToys 不只是换键——Windows 开发者的效率工具箱
-- **Part 3**：跨平台键盘一致性策略——让肌肉记忆不再分裂
+- **Part 2**: PowerToys is more than just key swapping — the Windows developer productivity toolbox
+- **Part 3**: Cross-platform keyboard consistency strategy — stop splitting your muscle memory
 
 ---
 
-*你有没有被 Ctrl 和 Win 键的位置差异折磨过？用了什么方案解决？欢迎在评论区分享你的经验。*
+*Have you been tormented by the Ctrl and Win key position differences? What solution did you use? Share your experience in the comments.*

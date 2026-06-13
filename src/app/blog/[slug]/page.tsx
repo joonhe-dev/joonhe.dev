@@ -412,7 +412,7 @@ export default async function BlogPostPage({
             href="/blog"
             className="mb-8 inline-flex text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            ← 返回博客
+            ← Back to Blog
           </Link>
 
           <header className="mb-8">
@@ -463,7 +463,7 @@ export default async function BlogPostPage({
                   className="group flex-1 rounded-lg border border-zinc-200 p-4 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
                 >
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                    ← 上一篇
+                    ← Previous
                   </span>
                   <p className="mt-1 text-sm font-medium text-zinc-900 transition-colors group-hover:text-indigo-500 dark:text-zinc-100">
                     {prevPost.title}
@@ -478,7 +478,7 @@ export default async function BlogPostPage({
                   className="group flex-1 rounded-lg border border-zinc-200 p-4 text-right transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
                 >
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                    下一篇 →
+                    Next →
                   </span>
                   <p className="mt-1 text-sm font-medium text-zinc-900 transition-colors group-hover:text-indigo-500 dark:text-zinc-100">
                     {nextPost.title}

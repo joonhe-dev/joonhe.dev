@@ -5,5 +5,5 @@ export function formatDate(date: string) {
 }
 
 export function formatDateLong(date: string) {
-  return format(parseISO(date), "yyyy 年 M 月 d 日");
+  return format(parseISO(date), "MMMM d, yyyy");
 }

@@ -40,7 +40,7 @@ export function ReadingTime({ content }: ReadingTimeProps) {
 
   return (
     <span className="text-sm text-zinc-500 dark:text-zinc-400">
-      {minutes} 分钟阅读
+      {minutes} min read
     </span>
   );
 }
