@@ -35,20 +35,28 @@ function readMdxContent(slug: string): string | null {
   }
 }
 
-// 解析内联格式
-function renderInline(text: string): string {
+// HTML 转义，防止 XSS
+function escapeHtml(text: string): string {
   return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// 解析内联格式（先转义 HTML，再处理 Markdown 语法）
+function renderInline(text: string): string {
+  return escapeHtml(text)
     // **bold**
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    // *italic*（避免匹配已处理的 **bold**）
+    .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>")
     // `code`
+    .replace(/`(.+?)`/g, "<code class='rounded bg-zinc-100 px-1.5 py-0.5 text-sm text-pink-600 dark:bg-zinc-800 dark:text-pink-400'>$1</code>")
+    // [text](url) — 只允许 http/https 链接
     .replace(
-      /`(.+?)`/g,
-      "<code class='rounded bg-zinc-100 px-1.5 py-0.5 text-sm text-pink-600 dark:bg-zinc-800 dark:text-pink-400'>$1</code>",
-    )
-    // [text](url)
-    .replace(
-      /\[(.+?)\]\((.+?)\)/g,
-      "<a href='$2' class='text-indigo-500 underline decoration-indigo-300 underline-offset-2 hover:text-indigo-600'>$1</a>",
+      /\[(.+?)\]\((https?:\/\/.+?)\)/g,
+      "<a href='$2' class='text-indigo-500 underline decoration-indigo-300 underline-offset-2 hover:text-indigo-600' target='_blank' rel='noopener noreferrer'>$1</a>",
     );
 }
 
@@ -78,10 +86,14 @@ function renderContent(content: string) {
 
   const flushTable = (key: number) => {
     if (tableBuffer.length >= 2) {
+      // 过滤掉表格分隔符行（|---|---|）
+      const dataRows = tableBuffer.filter(
+        (row) => !/^\|[\s\-:|]+\|$/.test(row),
+      );
       elements.push(
         <div key={key} className="my-4 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
-            {tableBuffer.map((row, ri) => {
+            {dataRows.map((row, ri) => {
               const cells = row
                 .split("|")
                 .filter((c) => c.trim())
@@ -156,7 +168,45 @@ function renderContent(content: string) {
       continue;
     }
 
-    // H2 (with id for TOC)
+    // 水平线 --- / *** / ___
+    if (/^[-*_]{3,}$/.test(trimmed)) {
+      elements.push(
+        <hr
+          key={keyCounter++}
+          className="my-8 border-t border-zinc-200 dark:border-zinc-700"
+        />,
+      );
+      continue;
+    }
+
+    // 块引用 > text
+    if (trimmed.startsWith("> ")) {
+      const quoteLines: string[] = [trimmed.slice(2)];
+      while (
+        i + 1 < lines.length &&
+        lines[i + 1].trim().startsWith("> ")
+      ) {
+        i++;
+        quoteLines.push(lines[i].trim().slice(2));
+      }
+      elements.push(
+        <blockquote
+          key={keyCounter++}
+          className="my-4 border-l-4 border-indigo-300 pl-4 italic text-zinc-600 dark:border-indigo-700 dark:text-zinc-400"
+        >
+          {quoteLines.map((line, idx) => (
+            <p
+              key={idx}
+              className="my-1"
+              dangerouslySetInnerHTML={{ __html: renderInline(line) }}
+            />
+          ))}
+        </blockquote>,
+      );
+      continue;
+    }
+
+    // H2
     if (trimmed.startsWith("## ") && !trimmed.startsWith("###")) {
       const headingText = trimmed.slice(3);
       const id = headingText
@@ -206,6 +256,44 @@ function renderContent(content: string) {
             __html: renderInline(trimmed.slice(5)),
           }}
         />,
+      );
+      continue;
+    }
+
+    // 复选框列表 - [ ] / - [x]
+    if (/^- \[[ x]\]/.test(trimmed)) {
+      const items: { checked: boolean; text: string }[] = [];
+      const match = trimmed.match(/^- \[([ x])\] (.+)$/);
+      if (match) {
+        items.push({ checked: match[1] === "x", text: match[2] });
+        while (
+          i + 1 < lines.length &&
+          /^- \[[ x]\]/.test(lines[i + 1].trim())
+        ) {
+          i++;
+          const m = lines[i].trim().match(/^- \[([ x])\] (.+)$/);
+          if (m) items.push({ checked: m[1] === "x", text: m[2] });
+        }
+      }
+      elements.push(
+        <ul key={keyCounter++} className="my-2 ml-6 space-y-1">
+          {items.map((item, idx) => (
+            <li key={idx} className="flex items-start gap-2 text-zinc-600 dark:text-zinc-400">
+              <span className="mt-0.5 flex-shrink-0">
+                {item.checked ? (
+                  <svg className="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4 text-zinc-400" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="3" y="3" width="14" height="14" rx="2" />
+                  </svg>
+                )}
+              </span>
+              <span dangerouslySetInnerHTML={{ __html: renderInline(item.text) }} />
+            </li>
+          ))}
+        </ul>,
       );
       continue;
     }
