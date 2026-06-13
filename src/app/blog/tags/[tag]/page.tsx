@@ -6,7 +6,7 @@ import { generateSeoMeta } from "@/lib/seo";
 import { posts, type PostMeta, getAllTags } from "@/lib/posts";
 
 interface Props {
-  params: { tag: string };
+  params: Promise<{ tag: string }>;
 }
 
 export function generateStaticParams() {
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const tag = decodeURIComponent(params.tag);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { tag: tagParam } = await params;
+  const tag = decodeURIComponent(tagParam);
   return generateSeoMeta({
     title: `标签: ${tag} - AI 编程与 Web 开发`,
     description: `浏览标签「${tag}」下的所有文章。`,
@@ -26,8 +27,9 @@ export function generateMetadata({ params }: Props): Metadata {
   });
 }
 
-export default function TagPage({ params }: Props) {
-  const tag = decodeURIComponent(params.tag);
+export default async function TagPage({ params }: Props) {
+  const { tag: tagParam } = await params;
+  const tag = decodeURIComponent(tagParam);
   const tagPosts = posts.filter((post) => post.tags.includes(tag));
 
   if (tagPosts.length === 0) notFound();

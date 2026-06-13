@@ -11,7 +11,7 @@ import {
 } from "@/lib/posts";
 
 interface Props {
-  params: { page: string };
+  params: Promise<{ page: string }>;
 }
 
 export function generateStaticParams() {
@@ -21,8 +21,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const pageNum = parseInt(params.page, 10);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { page: pageParam } = await params;
+  const pageNum = parseInt(pageParam, 10);
   const totalPages = getTotalPages();
 
   if (isNaN(pageNum) || pageNum < 1 || pageNum > totalPages) {
@@ -42,8 +43,9 @@ export function generateMetadata({ params }: Props): Metadata {
   });
 }
 
-export default function BlogPagePage({ params }: Props) {
-  const pageNum = parseInt(params.page, 10);
+export default async function BlogPagePage({ params }: Props) {
+  const { page: pageParam } = await params;
+  const pageNum = parseInt(pageParam, 10);
   const totalPages = getTotalPages();
 
   if (isNaN(pageNum) || pageNum < 1 || pageNum > totalPages) {

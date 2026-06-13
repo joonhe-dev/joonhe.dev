@@ -319,12 +319,13 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const post = postsMeta.find((p) => p.slug === params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = postsMeta.find((p) => p.slug === slug);
   if (!post) return {};
   return generateSeoMeta({
     title: post.title,
@@ -337,12 +338,13 @@ export function generateMetadata({
   });
 }
 
-export default function BlogPostPage({
+export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = postsMeta.find((p) => p.slug === params.slug);
+  const { slug } = await params;
+  const post = postsMeta.find((p) => p.slug === slug);
   if (!post) notFound();
 
   // 从 MDX 文件读取内容
