@@ -3,73 +3,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 import { formatDateLong } from "@/lib/date";
-import {
-  generateSeoMeta,
-  generateBreadcrumbSchema,
-} from "@/lib/seo";
-import { siteConfig } from "@/lib/site";
+import { generateSeoMeta } from "@/lib/seo";
+import { posts, type PostMeta } from "@/lib/posts";
+import { TableOfContents } from "@/components/blog/table-of-contents";
+import { RelatedPosts } from "@/components/blog/related-posts";
+import { ReadingTime } from "@/components/blog/reading-time";
+import { AuthorBio } from "@/components/blog/author-bio";
 import fs from "fs";
 import path from "path";
 
-interface PostMeta {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  tags: string[];
-}
-
 // 从 MDX 文件读取文章元数据
-const postsMeta: PostMeta[] = [
-  {
-    slug: "ai-web-development-workflow",
-    title: "AI 辅助 Web 开发实战：从 Prompt 到生产的最佳工作流",
-    excerpt:
-      "每天用 AI 写代码，但你真的用对了吗？本文分享我在 Web 开发中使用 AI 的真实工作流，从 Prompt 技巧到代码审查，从原型设计到生产部署。",
-    date: "2026-06-12",
-    tags: ["AI 编程", "Web 开发", "工作流", "最佳实践", "效率"],
-  },
-  {
-    slug: "ai-prompt-engineering-web-dev",
-    title: "Web 开发者 AI Prompt 工程指南：让 AI 写出你想要的代码",
-    excerpt:
-      "同样的 AI，为什么有人能写出高质量代码，有人只能得到垃圾？关键在于 Prompt 工程。本文总结 Web 开发场景下的 AI Prompt 实战技巧。",
-    date: "2026-06-12",
-    tags: ["Prompt 工程", "AI 编程", "Web 开发", "效率", "技巧"],
-  },
-  {
-    slug: "ai-tools-remote-developer",
-    title: "远程开发者 AI 工具箱：2026 年必备的 10 个 AI 工具",
-    excerpt:
-      "作为远程工作者，AI 工具就是你的生产力倍增器。本文精选 10 个经过实战检验的 AI 工具，涵盖代码生成、调试、文档、设计全流程。",
-    date: "2026-06-12",
-    tags: ["远程工作", "AI 工具", "开发者工具", "效率", "开源"],
-  },
-  {
-    slug: "ai-assisted-programming-evolution",
-    title: "AI 辅助编程：从「复制粘贴」到「结对编程」的进化",
-    excerpt:
-      "AI 代码助手不是搜索引擎的替代品，而是一个永远在线、永不疲倦的结对编程伙伴。问题是——你真的知道怎么和它配合吗？",
-    date: "2026-06-12",
-    tags: ["AI 编程", "开发实践", "LLM", "效率"],
-  },
-  {
-    slug: "ai-code-review-practical-guide",
-    title: "用 AI 做 Code Review：一个开源维护者的实战经验",
-    excerpt:
-      "作为开源项目的维护者，我每天要 review 大量 PR。AI Code Review 帮我节省了 60% 的时间，但也踩了不少坑。",
-    date: "2026-06-12",
-    tags: ["Code Review", "开源", "最佳实践"],
-  },
-  {
-    slug: "open-source-ai-toolchain-guide",
-    title: "开源 AI 工具链搭建指南：从模型选择到生产部署",
-    excerpt:
-      "不想被闭源 API 绑定？这篇文章教你用纯开源工具搭建一套完整的 AI 开发工具链，从本地模型到 CI/CD 全流程覆盖。",
-    date: "2026-06-12",
-    tags: ["开源", "工具链", "LLM", "部署"],
-  },
-];
+const postsMeta: PostMeta[] = posts;
 
 // 读取 MDX 内容，去掉 frontmatter
 function readMdxContent(slug: string): string | null {
@@ -97,7 +41,10 @@ function renderInline(text: string): string {
     // **bold**
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     // `code`
-    .replace(/`(.+?)`/g, "<code class='rounded bg-zinc-100 px-1.5 py-0.5 text-sm text-pink-600 dark:bg-zinc-800 dark:text-pink-400'>$1</code>")
+    .replace(
+      /`(.+?)`/g,
+      "<code class='rounded bg-zinc-100 px-1.5 py-0.5 text-sm text-pink-600 dark:bg-zinc-800 dark:text-pink-400'>$1</code>",
+    )
     // [text](url)
     .replace(
       /\[(.+?)\]\((.+?)\)/g,
@@ -209,28 +156,40 @@ function renderContent(content: string) {
       continue;
     }
 
-    // H2
+    // H2 (with id for TOC)
     if (trimmed.startsWith("## ") && !trimmed.startsWith("###")) {
+      const headingText = trimmed.slice(3);
+      const id = headingText
+        .toLowerCase()
+        .replace(/[^\w\u4e00-\u9fff]+/g, "-")
+        .replace(/(^-|-$)/g, "");
       elements.push(
         <h2
+          id={id}
           key={keyCounter++}
-          className="mt-10 mb-4 text-2xl font-semibold tracking-tight"
+          className="mt-10 mb-4 scroll-mt-24 text-2xl font-semibold tracking-tight"
           dangerouslySetInnerHTML={{
-            __html: renderInline(trimmed.slice(3)),
+            __html: renderInline(headingText),
           }}
         />,
       );
       continue;
     }
 
-    // H3
+    // H3 (with id for TOC)
     if (trimmed.startsWith("### ")) {
+      const headingText = trimmed.slice(4);
+      const id = headingText
+        .toLowerCase()
+        .replace(/[^\w\u4e00-\u9fff]+/g, "-")
+        .replace(/(^-|-$)/g, "");
       elements.push(
         <h3
+          id={id}
           key={keyCounter++}
-          className="mt-6 mb-3 text-xl font-semibold tracking-tight"
+          className="mt-6 mb-3 scroll-mt-24 text-xl font-semibold tracking-tight"
           dangerouslySetInnerHTML={{
-            __html: renderInline(trimmed.slice(4)),
+            __html: renderInline(headingText),
           }}
         />,
       );
@@ -275,10 +234,7 @@ function renderContent(content: string) {
     // 有序列表
     if (/^\d+\. /.test(trimmed)) {
       const items: string[] = [trimmed.replace(/^\d+\. /, "")];
-      while (
-        i + 1 < lines.length &&
-        /^\d+\. /.test(lines[i + 1].trim())
-      ) {
+      while (i + 1 < lines.length && /^\d+\. /.test(lines[i + 1].trim())) {
         i++;
         items.push(lines[i].trim().replace(/^\d+\. /, ""));
       }
@@ -334,7 +290,6 @@ export async function generateMetadata({
     keywords: post.tags,
     publishedTime: post.date,
     tags: post.tags,
-    image: `${siteConfig.url}/og-image.png`,
   });
 }
 
@@ -347,59 +302,112 @@ export default async function BlogPostPage({
   const post = postsMeta.find((p) => p.slug === slug);
   if (!post) notFound();
 
-  // 从 MDX 文件读取内容
+  // Read MDX content for rendering
   const content = readMdxContent(post.slug);
   if (!content) notFound();
 
-  // BreadcrumbList JSON-LD
-  const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Home", url: siteConfig.url },
-    { name: "Blog", url: `${siteConfig.url}/blog` },
-    { name: post.title, url: `${siteConfig.url}/blog/${post.slug}` },
-  ]);
+  // Find previous and next posts
+  const currentIndex = postsMeta.findIndex((p) => p.slug === post.slug);
+  const prevPost = currentIndex > 0 ? postsMeta[currentIndex - 1] : null;
+  const nextPost =
+    currentIndex < postsMeta.length - 1
+      ? postsMeta[currentIndex + 1]
+      : null;
 
   return (
-    <article className="max-w-3xl">
-      {/* BreadcrumbList JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
+    <div className="relative">
+      {/* Desktop: Two-column layout with TOC sidebar */}
+      <div className="lg:flex lg:gap-10">
+        {/* Main content */}
+        <article className="min-w-0 flex-1 max-w-3xl">
+          <Link
+            href="/blog"
+            className="mb-8 inline-flex text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            ← 返回博客
+          </Link>
 
-      <Link
-        href="/blog"
-        className="mb-8 inline-flex text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
-        ← 返回博客
-      </Link>
+          <header className="mb-8">
+            <div className="flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+              <time dateTime={post.date}>{formatDateLong(post.date)}</time>
+              <span aria-hidden="true">·</span>
+              <ReadingTime content={content} />
+            </div>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+              {post.title}
+            </h1>
+            <p className="mt-3 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+              {post.excerpt}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/blog/tags/${encodeURIComponent(tag)}`}
+                  className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-600 transition-colors hover:bg-indigo-100 hover:text-indigo-600 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-indigo-900 dark:hover:text-indigo-400"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </header>
 
-      <header className="mb-8">
-        <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-          <time dateTime={post.date}>{formatDateLong(post.date)}</time>
-        </div>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          {post.title}
-        </h1>
-        <p className="mt-3 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {post.excerpt}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </header>
+          <div className="prose prose-zinc max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-indigo-500">
+            {renderContent(content)}
+          </div>
 
-      <div className="prose prose-zinc max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-indigo-500">
-        {renderContent(content)}
+          {/* Author Bio */}
+          <AuthorBio />
+
+          {/* Related Posts */}
+          <RelatedPosts
+            currentSlug={post.slug}
+            tags={post.tags}
+            allPosts={postsMeta}
+          />
+
+          {/* Previous / Next navigation */}
+          <nav className="mt-12 border-t border-zinc-200 pt-8 dark:border-zinc-800">
+            <div className="flex items-center justify-between gap-4">
+              {prevPost ? (
+                <Link
+                  href={`/blog/${prevPost.slug}`}
+                  className="group flex-1 rounded-lg border border-zinc-200 p-4 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
+                >
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    ← 上一篇
+                  </span>
+                  <p className="mt-1 text-sm font-medium text-zinc-900 transition-colors group-hover:text-indigo-500 dark:text-zinc-100">
+                    {prevPost.title}
+                  </p>
+                </Link>
+              ) : (
+                <div className="flex-1" />
+              )}
+              {nextPost ? (
+                <Link
+                  href={`/blog/${nextPost.slug}`}
+                  className="group flex-1 rounded-lg border border-zinc-200 p-4 text-right transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
+                >
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    下一篇 →
+                  </span>
+                  <p className="mt-1 text-sm font-medium text-zinc-900 transition-colors group-hover:text-indigo-500 dark:text-zinc-100">
+                    {nextPost.title}
+                  </p>
+                </Link>
+              ) : (
+                <div className="flex-1" />
+              )}
+            </div>
+          </nav>
+        </article>
+
+        {/* Desktop TOC sidebar */}
+        <aside className="hidden w-56 shrink-0 lg:block">
+          <TableOfContents content={content} />
+        </aside>
       </div>
-    </article>
+    </div>
   );
 }

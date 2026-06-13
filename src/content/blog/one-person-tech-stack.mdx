@@ -1,0 +1,327 @@
+---
+title: "一人公司的技术栈选型指南"
+slug: one-person-tech-stack
+excerpt: "一个人做 SaaS，技术栈选对了是杠杆，选错了是枷锁。本文从实战角度出发，分享一人公司技术栈的核心原则、具体选型方案和真实成本估算。"
+date: "2026-06-13"
+tags: ["技术栈", "独立开发", "SaaS", "成本优化", "全栈"]
+---
+
+## 引言
+
+2024 年，我辞掉了大厂的工作，开始以"一人公司"的形式做自己的 SaaS 产品。第一个月，我花了整整两周时间纠结技术栈——Next.js 还是 Nuxt？Supabase 还是 PocketBase？Vercel 还是 AWS？
+
+两周后我意识到：**技术栈选型本身不会决定产品成败，但选错了会浪费你大量时间。**
+
+一人公司的核心矛盾是：**你只有一个人，但需要覆盖前端、后端、运维、支付、邮件、域名等所有环节。** 每一分钟花在"折腾基础设施"上的时间，都是从产品开发和用户获取上偷来的。
+
+这篇文章是我过去一年踩坑后的总结，希望能帮你少走弯路。
+
+## 一人公司的技术栈核心原则
+
+在开始具体选型之前，先明确几个原则：
+
+| 原则 | 说明 | 反面案例 |
+|------|------|----------|
+| 低成本启动 | 月成本控制在 $0-$50，产品验证后再升级 | 一上来就买 $200/月的企业级方案 |
+| 高杠杆工具 | 一个工具解决多个问题（如 Supabase 同时做 DB + Auth + Storage） | 每个功能用一个独立服务 |
+| 快速迭代 | 从想法到上线不超过 2 周 | 花 3 个月搭基础设施 |
+| 可迁移性 | 不能被某个平台锁死，随时能迁移 | 用了某个冷门 PaaS 的私有 API |
+| 社区活跃 | 遇到问题能 Google 到答案 | 选了个只有 100 Star 的框架 |
+
+**一句话总结：选那些让你能专注写业务代码，而不是写基础设施代码的工具。**
+
+## 前端框架：Next.js 是第一选择
+
+### 为什么是 Next.js？
+
+对于一人公司，Next.js 几乎是唯一合理的选择：
+
+```typescript
+// app/page.tsx — 一个典型的 Next.js App Router 页面
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+
+export default async function DashboardPage() {
+  const supabase = createServerComponentClient({ cookies })
+  const { data: projects } = await supabase.from('projects').select('*')
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {projects?.map((project) => (
+        <ProjectCard key={project.id} project={project} />
+      ))}
+    </div>
+  )
+}
+```
+
+**核心优势：**
+
+1. **全栈能力** — API Routes、Server Components、Server Actions，一个人搞定前后端
+2. **部署简单** — `git push` 到 Vercel 就上线，零运维
+3. **生态成熟** — 任何问题都有现成方案
+4. **SEO 友好** — SSR/SSG 天然支持
+
+### 什么时候选 Nuxt？
+
+如果你更熟悉 Vue 生态，Nuxt 3 也是不错的选择。但考虑到：
+
+- Next.js 的社区规模是 Nuxt 的 5-10 倍
+- Vercel 对 Next.js 的优化是亲儿子级别的
+- React Server Components 的生态正在爆发
+
+**我的建议：除非你已经是 Vue 重度用户，否则选 Next.js。**
+
+## 后端与数据库：Supabase 是性价比之王
+
+### Supabase 为什么适合一人公司？
+
+Supabase 解决了一个人做 SaaS 最头疼的问题：**你不需要写后端。**
+
+```typescript
+// 不需要写 API 路由，直接在前端查询数据库
+const { data: invoices, error } = await supabase
+  .from('invoices')
+  .select(`
+    *,
+    customer:customer_id (name, email),
+    items:invoice_items (*)
+  `)
+  .eq('status', 'overdue')
+  .gte('due_date', '2024-01-01')
+  .order('due_date', { ascending: false })
+```
+
+**Supabase 提供的开箱即用能力：**
+
+| 功能 | Supabase 方案 | 自己搭建的成本 |
+|------|---------------|----------------|
+| 数据库 | PostgreSQL（托管） | 买服务器 + 配置 + 备份 |
+| 认证 | Auth（邮箱/手机/OAuth） | 实现 JWT + Session 管理 |
+| 存储 | S3 兼容的对象存储 | 配置 MinIO 或直接 S3 |
+| 实时订阅 | WebSocket Realtime | 自己搭 WebSocket 服务 |
+| 边缘函数 | Deno Edge Functions | 写 Lambda 函数 |
+| API 生成 | 自动从表结构生成 REST API | 手写 CRUD 接口 |
+
+### 成本对比
+
+```
+Supabase Free Plan:
+  - 500MB 数据库
+  - 5GB 带宽
+  - 50,000 月活用户
+  - 2GB 存储
+  → 适合 MVP 阶段
+
+Supabase Pro ($25/月):
+  - 8GB 数据库
+  - 50GB 带宽
+  - 100,000 月活用户
+  - 100GB 存储
+  → 适合产品验证后
+
+自建 PostgreSQL（最便宜方案）:
+  - $5/月 VPS + 运维时间成本
+  - 需要自己处理备份、扩缩容、安全
+  → 不推荐，除非你特别熟悉运维
+```
+
+### 其他 BaaS 选项
+
+| 方案 | 优势 | 劣势 | 适合场景 |
+|------|------|------|----------|
+| Supabase | 功能全面、开源、PostgreSQL | 免费层限制较多 | 大多数场景 |
+| PocketBase | 极简、单文件部署、自托管 | 功能较少、社区较小 | 简单 CRUD 应用 |
+| Convex | 实时性好、TypeScript 原生 | 学习曲线、平台锁定 | 实时协作应用 |
+| Appwrite | 功能全面、自托管友好 | 性能一般、社区不如 Supabase | 需要自托管的场景 |
+
+**我的选择：Supabase 启动，产品验证后如果成本压力大，考虑迁移到自托管 Supabase 或直接 PostgreSQL。**
+
+## 支付：Stripe 是标准答案
+
+### 为什么是 Stripe？
+
+一人公司的支付方案，核心要求是：**不需要自己处理合规、税务、退款。**
+
+```typescript
+// Stripe Checkout — 一行代码搞定支付页面
+import Stripe from 'stripe'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
+export async function createCheckoutSession(priceId: string) {
+  const session = await stripe.checkout.sessions.create({
+    mode: 'subscription',
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+    cancel_url: `${process.env.NEXT_PUBLIC_URL}/pricing`,
+    customer_email: user.email,
+  })
+
+  return { url: session.url }
+}
+```
+
+**Stripe 的核心优势：**
+
+1. **托管支付页面** — Checkout 模式，不需要自己写支付 UI
+2. **订阅管理** — 自动续费、升降级、取消
+3. **税务处理** — Stripe Tax 自动计算和申报
+4. **发票系统** — 自动生成和发送发票
+5. **全球支付** — 支持 135+ 种货币
+
+### 其他支付方案
+
+| 方案 | 费率 | 优势 | 劣势 |
+|------|------|------|------|
+| Stripe | 2.9% + $0.30 | 功能最全、文档最好 | 中国用户注册困难 |
+| LemonSqueezy | 5% + $0.50 | 支持 PayPal、对非美国用户友好 | 费率较高 |
+| Paddle | 5% + $0.50 | 处理全球税务、支持中国用户 | 需要审核、费率最高 |
+| 支付宝/微信 | 0.6%-1% | 费率低、国内用户友好 | 仅限中国、无订阅管理 |
+
+**我的建议：面向全球用户用 Stripe，面向中国用户用 LemonSqueezy 或 Paddle 作为补充。**
+
+## 部署：Vercel 是最省心的选择
+
+### Vercel 的一站式方案
+
+```bash
+# 部署一个 Next.js 项目到 Vercel
+vercel --prod
+
+# 配置环境变量
+vercel env add DATABASE_URL
+
+# 查看部署日志
+vercel logs --prod
+```
+
+**Vercel 的杀手锏：**
+
+1. **Git 集成** — 推送到 main 分支自动部署
+2. **Preview Deployments** — 每个 PR 自动生成预览 URL
+3. **Edge Network** — 全球 CDN，零配置
+4. **Serverless Functions** — 自动扩缩容，按调用计费
+5. **Analytics** — 内置 Web Analytics 和 Speed Insights
+
+### 成本对比
+
+```
+Vercel Free:
+  - 100GB 带宽/月
+  - 6000 构建分钟/月
+  - 10 个 Serverless 函数
+  - 无限 Preview Deployments
+  → 足够支撑 MVP 阶段
+
+Vercel Pro ($20/月):
+  - 1TB 带宽/月
+  - 6000 构建分钟/月
+  - 100 个 Serverless 函数
+  - 团队协作功能
+  → 产品验证后升级
+
+其他平台:
+  - Railway: $5 起步，按资源计费
+  - Fly.io: $2.5/月起步，按实例计费
+  - 自建 VPS: $5-10/月，需要运维
+```
+
+**我的选择：Vercel Free 启动 → 流量上来后升级 Pro → 如果成本压力大，迁移到自建方案。**
+
+## 完整栈成本估算
+
+### MVP 阶段（0-100 用户）
+
+| 服务 | 方案 | 月成本 |
+|------|------|--------|
+| 前端托管 | Vercel Free | $0 |
+| 数据库 + 认证 | Supabase Free | $0 |
+| 支付 | Stripe | $0（按交易扣费） |
+| 邮件 | Resend Free (100封/天) | $0 |
+| 域名 | Namecheap | ~$1/月 |
+| 监控 | Sentry Free | $0 |
+| **总计** | | **~$1/月** |
+
+### 增长阶段（100-1000 用户）
+
+| 服务 | 方案 | 月成本 |
+|------|------|--------|
+| 前端托管 | Vercel Pro | $20 |
+| 数据库 + 认证 | Supabase Pro | $25 |
+| 支付 | Stripe | $0 + 交易费 |
+| 邮件 | Resend Growth ($20) | $20 |
+| 域名 | Namecheap | ~$1/月 |
+| 监控 | Sentry Team ($26) | $26 |
+| 分析 | PostHog Free | $0 |
+| **总计** | | **~$92/月** |
+
+### 规模化阶段（1000+ 用户）
+
+这时你应该已经有收入了，可以考虑：
+
+- 迁移到自托管 Supabase 或直接 AWS RDS
+- 使用 Cloudflare 做 CDN 和 DDoS 防护
+- 引入专门的日志和监控方案
+- 考虑多区域部署
+
+## 我踩过的坑
+
+### 坑 1：过早优化
+
+**错误：** 一开始就用了微服务架构，把用户系统、支付系统、通知系统拆成三个独立服务。
+
+**结果：** 花了 3 周搭建基础设施，第 4 周发现需求变了，微服务之间的通信逻辑全部重写。
+
+**教训：** 一人公司不需要微服务。单体应用 + 清晰的模块划分就够了。等你有 3 个以上开发人员时再考虑拆分。
+
+### 坑 2：选了个冷门 ORM
+
+**错误：** 为了"性能更好"选了一个只有 500 Star 的 ORM。
+
+**结果：** 遇到 bug 没人回答，文档不全，最后花了 2 天迁移到 Prisma。
+
+**教训：** 对于一人公司，**社区活跃度比性能重要 10 倍。** 用 Prisma、Drizzle 这种主流 ORM，遇到问题能 Google 到答案。
+
+### 坑 3：自己搭邮件服务器
+
+**错误：** 为了省钱，自己用 Postfix 搭邮件服务器。
+
+**结果：** 邮件被各大邮箱服务商标记为垃圾邮件，用户收不到注册确认邮件，流失率高达 40%。
+
+**教训：** 邮件服务永远用第三方。Resend、SendGrid、Mailgun，选一个就行。每月 $20 换来的是 99%+ 的送达率。
+
+## 实际案例：我的 SaaS 技术栈
+
+```
+Frontend:    Next.js 14 (App Router) + Tailwind CSS + shadcn/ui
+Backend:     Supabase (PostgreSQL + Auth + Storage)
+ORM:         Drizzle ORM
+Payments:    Stripe + LemonSqueezy
+Deployment:  Vercel
+Email:       Resend
+Analytics:   PostHog
+Monitoring:  Sentry
+Domain:      Cloudflare DNS
+CI/CD:       GitHub Actions
+```
+
+**月成本：** ~$50（Vercel Pro + Supabase Pro + Resend Growth）
+
+**上线时间：** 从 idea 到第一个付费用户，用了 10 天。
+
+## 总结
+
+一人公司的技术栈选型没有银弹，但有一个清晰的决策框架：
+
+1. **MVP 阶段：** 用最少的钱、最快的速度验证想法。Next.js + Supabase + Vercel + Stripe，月成本 $1。
+2. **增长阶段：** 产品验证后，逐步升级服务。月成本控制在 $50-$100。
+3. **规模化阶段：** 有了收入后，再考虑迁移和优化。
+
+**记住：你的目标是做出用户愿意付费的产品，而不是搭建一个完美的技术架构。**
+
+技术栈只是工具，不是目的。选那些让你能最快交付价值的工具，把省下来的时间花在理解用户、打磨产品上。
+
+---
+
+*你的一人公司用的是什么技术栈？有什么踩坑经验想分享？欢迎在评论区留言。*
