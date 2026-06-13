@@ -13,19 +13,19 @@ export function Footer() {
             href="/blog"
             className="text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            博客
+            Blog
           </Link>
           <Link
             href="/projects"
             className="text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            项目
+            Projects
           </Link>
           <Link
             href="/about"
             className="text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            关于
+            About
           </Link>
           <Link
             href="/feed.xml"

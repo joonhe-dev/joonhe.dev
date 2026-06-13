@@ -1,247 +1,247 @@
 ---
-title: "Web 开发者 AI Prompt 工程指南：让 AI 写出你想要的代码"
+title: "AI Prompt Engineering Guide for Web Developers: Making AI Write the Code You Want"
 slug: ai-prompt-engineering-web-dev
-excerpt: "同样的 AI，为什么有人能写出高质量代码，有人只能得到垃圾？关键在于 Prompt 工程。本文总结 Web 开发场景下的 AI Prompt 实战技巧。"
+excerpt: "Same AI, yet some developers produce high-quality code while others get garbage. The difference? Prompt engineering. This post covers practical AI prompt techniques for web development scenarios."
 date: "2026-06-12"
-tags: ["Prompt 工程", "AI 编程", "Web 开发", "效率", "技巧"]
+tags: ["Prompt Engineering", "AI Coding", "Web Development", "Productivity", "Tips"]
 ---
 
-## 引言：Prompt 工程是 2026 年开发者的必修课
+## Intro: Prompt Engineering Is a Must-Have Skill for Developers in 2026
 
-2026 年，不会写 Prompt 的开发者，就像 2016 年不会用 Google 的开发者。
+In 2026, a developer who can't write prompts is like a developer in 2016 who couldn't use Google.
 
-不是夸张。AI 已经渗透到 Web 开发的每一个环节——代码生成、调试、重构、测试、文档。但**同样的 AI，不同的人用，产出天差地别**。
+Not an exaggeration. AI has penetrated every part of web development—code generation, debugging, refactoring, testing, documentation. But **the same AI, used by different people, produces wildly different results**.
 
-区别在哪？**Prompt 工程。**
+What's the difference? **Prompt engineering.**
 
-## 一、Web 开发 Prompt 的核心框架
+## 1. The Core Framework for Web Development Prompts
 
-我总结了一个 **4C 框架**，适用 90% 的 Web 开发场景：
+I've distilled a **4C Framework** that covers 90% of web development scenarios:
 
-| 要素 | 含义 | 示例 |
-|------|------|------|
-| **Context** | 项目上下文 | 技术栈、已有代码、约束条件 |
-| **Command** | 明确指令 | 要做什么、输出格式 |
-| **Constraint** | 约束条件 | 性能要求、兼容性、安全要求 |
-| **Check** | 检查要求 | 让 AI 自我检查、指出风险 |
+| Element | Meaning | Example |
+|---------|---------|---------|
+| **Context** | Project context | Tech stack, existing code, constraints |
+| **Command** | Clear instruction | What to do, output format |
+| **Constraint** | Constraints | Performance requirements, compatibility, security needs |
+| **Check** | Check requirements | Ask AI to self-check, point out risks |
 
-### 实战对比
-
-```
-❌ 差 Prompt：
-"帮我写一个登录页面"
-
-✅ 好 Prompt：
-Context: Next.js 16 + TypeScript + Tailwind 项目
-Command: 创建一个登录页面组件，包含邮箱、密码输入框和提交按钮
-Constraint: 
-- 表单验证（邮箱格式、密码长度 >= 8）
-- 加载状态
-- 错误提示
-- 响应式设计（移动端适配）
-Check: 生成后请指出这个实现可能存在的安全问题
-```
-
-## 二、Web 开发场景 Prompt 模板库
-
-### 2.1 组件开发的 Prompt 模板
+### Real-World Comparison
 
 ```
-## 需求
-创建一个 [组件名] 组件
+❌ Bad Prompt:
+"Build me a login page"
 
-## 技术栈
-- 框架: [React/Vue/Next.js]
-- 样式: [Tailwind/CSS Modules/Styled Components]
-- 语言: TypeScript
+✅ Good Prompt:
+Context: Next.js 16 + TypeScript + Tailwind project
+Command: Create a login page component with email, password inputs and a submit button
+Constraint:
+- Form validation (email format, password length >= 8)
+- Loading state
+- Error messages
+- Responsive design (mobile-friendly)
+Check: After generating, please point out potential security issues in this implementation
+```
 
-## 接口定义
+## 2. Prompt Template Library for Web Development Scenarios
+
+### 2.1 Component Development Prompt Template
+
+```
+## Requirement
+Create a [ComponentName] component
+
+## Tech Stack
+- Framework: [React/Vue/Next.js]
+- Styling: [Tailwind/CSS Modules/Styled Components]
+- Language: TypeScript
+
+## Interface Definition
 ```typescript
 interface Props {
-  // 组件的 props 定义
+  // Component props definition
 }
 ```
 
-## 功能要求
-1. [功能点 1]
-2. [功能点 2]
-3. [功能点 3]
+## Feature Requirements
+1. [Feature 1]
+2. [Feature 2]
+3. [Feature 3]
 
-## 状态覆盖
-- [ ] 加载状态
-- [ ] 空数据状态
-- [ ] 错误状态
-- [ ] 边界情况
+## State Coverage
+- [ ] Loading state
+- [ ] Empty data state
+- [ ] Error state
+- [ ] Edge cases
 
-## 代码风格
-- 使用函数组件 + hooks
-- 导出命名组件
-- 添加 JSDoc 注释
+## Code Style
+- Use function components + hooks
+- Export named component
+- Add JSDoc comments
 ```
 
-### 2.2 API 开发的 Prompt 模板
+### 2.2 API Development Prompt Template
 
 ```
-## 需求
-创建 [API 名称] API 端点
+## Requirement
+Create a [API Name] API endpoint
 
-## 技术栈
-- 框架: Next.js App Router / Express / FastAPI
-- 数据库: [Prisma/TypeORM/Mongoose]
-- 认证: [JWT/Session/OAuth]
+## Tech Stack
+- Framework: Next.js App Router / Express / FastAPI
+- Database: [Prisma/TypeORM/Mongoose]
+- Auth: [JWT/Session/OAuth]
 
-## 请求/响应
+## Request/Response
 - Method: GET/POST/PUT/DELETE
-- Request Body: [类型定义]
-- Response: [类型定义]
+- Request Body: [Type definition]
+- Response: [Type definition]
 
-## 需要处理的逻辑
-1. 参数验证
-2. 权限检查
-3. 业务逻辑
-4. 错误处理
-5. 日志记录
+## Logic to Handle
+1. Parameter validation
+2. Permission check
+3. Business logic
+4. Error handling
+5. Logging
 
-## 安全要求
-- 输入 sanitize
-- SQL 注入防护
-- 速率限制
+## Security Requirements
+- Input sanitization
+- SQL injection protection
+- Rate limiting
 ```
 
-### 2.3 Bug 修复的 Prompt 模板
+### 2.3 Bug Fix Prompt Template
 
 ```
-## Bug 描述
-[描述 bug 的现象]
+## Bug Description
+[Describe the bug symptoms]
 
-## 复现步骤
-1. [步骤 1]
-2. [步骤 2]
+## Reproduction Steps
+1. [Step 1]
+2. [Step 2]
 
-## 代码片段
+## Code Snippet
 ```typescript
-// 相关代码
+// Relevant code
 ```
 
-## 已尝试的排查
-1. [已尝试的方法 1]
-2. [已尝试的方法 2]
+## Already Tried
+1. [Method 1 tried]
+2. [Method 2 tried]
 
-## 环境信息
-- 浏览器/Node 版本
-- 相关依赖版本
+## Environment Info
+- Browser/Node version
+- Relevant dependency versions
 ```
 
-## 三、高级 Prompt 技巧
+## 3. Advanced Prompt Techniques
 
-### 3.1 Chain of Thought（思维链）
+### 3.1 Chain of Thought
 
-让 AI 展示推理过程，而不是直接给答案：
-
-```
-"请一步步分析这个 bug 的可能原因，
-先列出所有可能性，
-然后逐一排除，
-最后给出最可能的根因和修复方案。"
-```
-
-**效果：** AI 的准确率提升 30-50%。
-
-### 3.2 Few-Shot（少样本学习）
-
-给 AI 一个你想要的输出示例：
+Have AI show its reasoning process instead of jumping straight to the answer:
 
 ```
-"请按照以下格式输出代码审查意见：
-
-## 问题类型：[性能/安全/可维护性]
-## 问题描述：[简短描述]
-## 代码位置：[文件名:行号]
-## 建议修复：[具体建议]
-## 优先级：[高/中/低]
-
-示例：
-## 问题类型：性能
-## 问题描述：useEffect 缺少依赖项导致无限循环
-## 代码位置：src/hooks/useData.ts:15
-## 建议修复：将 fetchData 加入依赖数组
-## 优先级：高
-
-现在请 review 以下代码..."
+"Please analyze the possible causes of this bug step by step,
+first list all possibilities,
+then rule them out one by one,
+and finally give the most likely root cause and fix."
 ```
 
-### 3.3 Negative Prompt（反向约束）
+**Effect:** AI's accuracy improves by 30-50%.
 
-告诉 AI **不要**做什么：
+### 3.2 Few-Shot Learning
 
-```
-"不要使用 any 类型
-不要引入新的依赖
-不要修改现有的 API 签名
-不要生成不必要的注释"
-```
-
-### 3.4 角色扮演
+Give AI an example of the output you want:
 
 ```
-"你是一个有 10 年经验的 Next.js 开发者，
-你参与过多个大型 SaaS 项目的架构设计。
-请 review 以下代码，从架构层面给出建议..."
+"Please output code review comments in the following format:
+
+## Issue Type: [Performance/Security/Maintainability]
+## Description: [Brief description]
+## Location: [filename:line]
+## Suggested Fix: [Specific suggestion]
+## Priority: [High/Medium/Low]
+
+Example:
+## Issue Type: Performance
+## Description: useEffect missing dependency causing infinite loop
+## Location: src/hooks/useData.ts:15
+## Suggested Fix: Add fetchData to the dependency array
+## Priority: High
+
+Now please review the following code..."
 ```
 
-## 四、常见 Web 开发场景的 Prompt 示例
+### 3.3 Negative Prompting
 
-### 场景 1：生成 API 路由
-
-```
-"在 Next.js App Router 中创建一个 API 路由，
-路径：/api/products
-功能：支持分页查询、按分类筛选、按价格排序
-数据库：Prisma + MySQL
-需要处理：参数验证、错误处理、日志"
-```
-
-### 场景 2：调试性能问题
+Tell AI what **not** to do:
 
 ```
-"这个 React 组件在渲染 1000 条数据时卡顿严重。
-请分析可能的原因，并给出优化方案。
-注意：不能使用虚拟滚动（业务需求限制）"
+"Do not use any type
+Do not introduce new dependencies
+Do not modify existing API signatures
+Do not generate unnecessary comments"
 ```
 
-### 场景 3：代码重构
+### 3.4 Role Playing
 
 ```
-"这个函数有 200 行，做了太多事情。
-请按照单一职责原则重构它。
-保持相同的对外接口，不要修改调用方代码。"
+"You are a Next.js developer with 10 years of experience,
+having worked on architecture design for multiple large SaaS projects.
+Please review the following code and give architectural-level suggestions..."
 ```
 
-## 五、Prompt 工程的常见误区
+## 4. Prompt Examples for Common Web Development Scenarios
 
-### 误区 1：Prompt 越长越好
-
-**不是。** 关键是**信息密度**，不是长度。100 个字的精准 Prompt 胜过 500 个字的废话。
-
-### 误区 2：一次问完所有事情
-
-**不要。** 分步提问。先让 AI 理解上下文，再逐步深入。
-
-### 误区 3：不验证 AI 的输出
-
-**永远要验证。** AI 看起来很自信，但它可能完全错了。
-
-## 六、总结
+### Scenario 1: Generating API Routes
 
 ```
-Prompt 工程的核心公式：
-
-好的输出 = 清晰的上下文 + 明确的指令 + 合理的约束 + 迭代的追问
+"Create an API route in Next.js App Router,
+path: /api/products
+Features: paginated queries, category filtering, price sorting
+Database: Prisma + MySQL
+Must handle: parameter validation, error handling, logging"
 ```
 
-**记住三点：**
-1. **给 AI 当"产品经理"** — 告诉它你要什么，而不是让它猜
-2. **分步迭代** — 不要一次问完，逐步深入
-3. **永远验证** — AI 是工具，不是权威
+### Scenario 2: Debugging Performance Issues
 
-*Prompt 工程是 2026 年开发者的核心竞争力。掌握它，你的开发效率至少翻倍。*
+```
+"This React component stutters badly when rendering 1000 items.
+Please analyze possible causes and give optimization suggestions.
+Note: Virtual scrolling is not an option (business requirement constraint)"
+```
+
+### Scenario 3: Code Refactoring
+
+```
+"This function is 200 lines long and does too many things.
+Please refactor it following the single responsibility principle.
+Keep the same public interface, do not modify caller code."
+```
+
+## 5. Common Misconceptions About Prompt Engineering
+
+### Misconception 1: Longer Prompts Are Better
+
+**Nope.** What matters is **information density**, not length. A 100-word precise prompt beats 500 words of fluff.
+
+### Misconception 2: Ask Everything at Once
+
+**Don't.** Ask in steps. Let AI understand the context first, then dive deeper progressively.
+
+### Misconception 3: Not Verifying AI's Output
+
+**Always verify.** AI sounds confident, but it could be completely wrong.
+
+## 6. Wrap-Up
+
+```
+The core formula for prompt engineering:
+
+Good Output = Clear Context + Explicit Instructions + Reasonable Constraints + Iterative Follow-ups
+```
+
+**Remember three things:**
+1. **Be AI's "product manager"** — tell it what you want, don't make it guess
+2. **Iterate in steps** — don't ask everything at once, go deeper progressively
+3. **Always verify** — AI is a tool, not an authority
+
+*Prompt engineering is a core competitive skill for developers in 2026. Master it, and your development productivity will at least double.*

@@ -5,33 +5,31 @@ import { generateSeoMeta } from "@/lib/seo";
 import { posts, type PostMeta } from "@/lib/posts";
 
 export const metadata: Metadata = generateSeoMeta({
-  title: "Blog - AI 编程与 Web 开发",
+  title: "Blog - AI Programming & Web Development",
   description:
-    "全栈开发者 Joonhe 的博客。分享 AI 辅助编程实战经验、Web 开发最佳实践、开源项目心得、远程工作者效率工具。",
+    "Full-stack developer Joonhe's blog. Sharing AI-assisted programming insights, web development best practices, open-source project experience, and productivity tools for remote workers.",
   slug: "blog",
   keywords: [
-    "AI 编程",
-    "Web 开发",
-    "前端开发",
-    "全栈开发",
-    "AI 工具",
-    "远程工作",
-    "开源",
+    "AI Programming",
+    "Web Development",
+    "Frontend Development",
+    "Full-Stack Development",
+    "AI Tools",
+    "Remote Work",
+    "Open Source",
   ],
 });
 
 export default function BlogPage() {
   return (
     <div>
-      {/* H1 标题 - SEO 核心 */}
       <h1 className="text-3xl font-bold tracking-tight">
-        AI 编程与 Web 开发博客
+        AI Programming & Web Development Blog
       </h1>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        全栈开发者 Joonhe 的博客。分享 AI 辅助编程实战经验、Web 开发最佳实践、开源项目心得。
+        Full-stack developer Joonhe&apos;s blog. Sharing AI-assisted programming insights, web development best practices, and open-source project experience.
       </p>
 
-      {/* 文章列表 */}
       <div className="mt-8 space-y-8">
         {posts.map((post: PostMeta) => (
           <article

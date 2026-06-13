@@ -48,7 +48,7 @@ export function Header() {
               </svg>
               <input
                 type="search"
-                placeholder="搜索..."
+                placeholder="Search..."
                 disabled
                 className="w-32 rounded-lg border border-zinc-200 bg-zinc-50 py-1.5 pl-8 pr-3 text-sm text-zinc-500 outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
               />

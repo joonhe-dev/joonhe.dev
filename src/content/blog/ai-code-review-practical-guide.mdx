@@ -1,153 +1,153 @@
 ---
-title: "用 AI 做 Code Review：一个开源维护者的实战经验"
+title: "AI-Powered Code Review: Lessons from an Open Source Maintainer"
 slug: ai-code-review-practical-guide
-excerpt: "作为开源项目的维护者，我每天要 review 大量 PR。AI Code Review 帮我节省了 60% 的时间，但也踩了不少坑。"
+excerpt: "As an open source maintainer, I review tons of PRs every day. AI Code Review saves me 60% of my time—but I've also hit plenty of pitfalls along the way."
 date: "2026-06-12"
-tags: ["AI", "Code Review", "开源", "最佳实践"]
+tags: ["AI", "Code Review", "Open Source", "Best Practices"]
 ---
 
-## 背景
+## Background
 
-我维护的几个开源项目，平均每天收到 10-15 个 PR。靠人工一个个 review，一天的时间就搭进去了。
+The open source projects I maintain receive an average of 10-15 PRs per day. Manually reviewing them one by one would eat up my entire day.
 
-半年前我开始尝试用 AI 做代码审查的辅助，到现在已经形成了一套相对成熟的工作流。
+Six months ago, I started experimenting with AI as a code review assistant, and I've now built a fairly mature workflow.
 
-这篇文章分享我的实战经验——**哪些 AI 能做好，哪些必须人来做**。
+This post shares my hands-on experience—**what AI does well, and what humans must handle**.
 
-## AI Code Review 擅长什么
+## What AI Code Review Is Good At
 
-### 1. 规范性检查
+### 1. Style and Convention Checks
 
-AI 对代码规范极其敏感，而且**不会累**：
+AI is incredibly sensitive to code conventions, and it **never gets tired**:
 
 ```typescript
-// ❌ AI 会发现的问题
-function fetchData(url){  // 缺少空格
-  return fetch(url).then(res=>res.json())  // 箭头函数不规范
+// ❌ Issues AI will catch
+function fetchData(url){  // missing space
+  return fetch(url).then(res=>res.json())  // inconsistent arrow function style
 }
 
-// ✅ AI 建议
+// ✅ AI suggestion
 function fetchData(url: string) {
   return fetch(url).then((res) => res.json());
 }
 ```
 
-**最佳实践**：把项目的 ESLint/Prettier 配置、命名规范、commit 规范都告诉 AI，让它做第一道把关。
+**Best practice**: Feed AI your project's ESLint/Prettier config, naming conventions, and commit conventions. Let it be the first line of defense.
 
-### 2. 常见 Bug 模式
+### 2. Common Bug Patterns
 
-AI 对已知的 bug 模式识别能力很强：
+AI is great at spotting known bug patterns:
 
-- 未处理的异步错误
-- 内存泄漏（未清理的监听器、定时器）
-- 类型断言滥用（`as any`、`as unknown as X`）
-- 重复代码（DRY 原则违反）
-- 不安全的用户输入处理
+- Unhandled async errors
+- Memory leaks (uncleaned listeners, timers)
+- Type assertion abuse (`as any`, `as unknown as X`)
+- Duplicate code (DRY principle violations)
+- Unsafe user input handling
 
-### 3. 测试覆盖率分析
+### 3. Test Coverage Analysis
 
 ```typescript
-// AI review 时发现：
-// ⚠️ 新增了 errorHandler 函数，但没有对应的测试用例
-// ⚠️ 修改了 getUser 的返回格式，但现有测试没有覆盖新字段
-// 💡 建议：补充 errorHandler.test.ts，更新 getUser 的 mock 数据
+// AI review findings:
+// ⚠️ New errorHandler function added, but no corresponding test cases
+// ⚠️ getUser return format changed, but existing tests don't cover new fields
+// 💡 Suggestion: Add errorHandler.test.ts, update getUser mock data
 ```
 
-### 4. 文档与代码的一致性
+### 4. Docs-vs-Code Consistency
 
-AI 能发现"注释说的和代码做的不一样"的问题——这是人类 review 时最容易忽略的。
+AI can spot "the comments say one thing, the code does another"—something human reviewers最容易 overlook.
 
-## AI Code Review 的局限性
+## Limitations of AI Code Review
 
-### ❌ 架构决策
+### ❌ Architectural Decisions
 
-AI 很难判断"这个模块应该放在哪个目录"、"应该用组合还是继承"这类架构问题。因为它缺乏对项目整体演变的了解。
+AI can't judge whether "this module should go in this directory" or "should we use composition or inheritance." It lacks understanding of the project's overall evolution.
 
-### ❌ 业务逻辑正确性
+### ❌ Business Logic Correctness
 
-AI 不知道你的业务规则。它可能觉得代码写得很漂亮，但逻辑完全是错的。
+AI doesn't know your business rules. It might think the code looks beautiful, but the logic could be completely wrong.
 
-### ❌ 团队政治和代码所有权
+### ❌ Team Politics and Code Ownership
 
-"这个模块应该由哪个团队维护"、"这个改动会不会影响其他团队"——这些需要人的判断。
+"Which team should maintain this module?" "Will this change affect other teams?"—these require human judgment.
 
-### ❌ 审美和品味
+### ❌ Aesthetics and Taste
 
-代码规范和风格可以自动化，但**代码的品味**——什么时候该抽象、什么时候该直白——AI 还远做不到。
+Code conventions and style can be automated, but **code taste**—knowing when to abstract vs. when to be explicit—AI is nowhere close to getting that right.
 
-## 我的 AI Code Review 工作流
+## My AI Code Review Workflow
 
-### 第一步：AI 初筛（自动）
+### Step 1: AI First Pass (Automated)
 
-当 PR 提交时，AI 自动做第一轮 review：
+When a PR is submitted, AI automatically does the first round of review:
 
 ```
 AI Review Checklist:
-✅ 代码风格符合项目规范
-✅ 没有明显的安全漏洞
-✅ 新增代码有对应的测试
-✅ 公共 API 有 JSDoc 注释
-✅ 没有引入不必要的依赖
-⚠️ 发现 3 处潜在的性能问题（见下方）
-⚠️ 建议：函数 handleSubmit 过长（85行），建议拆分
+✅ Code style follows project conventions
+✅ No obvious security vulnerabilities
+✅ New code has corresponding tests
+✅ Public APIs have JSDoc comments
+✅ No unnecessary dependencies introduced
+⚠️ Found 3 potential performance issues (see below)
+⚠️ Suggestion: handleSubmit function is too long (85 lines), consider splitting
 ```
 
-### 第二步：人做深度 review
+### Step 2: Deep Human Review
 
-AI 标记出问题后，我**只 review AI 标记的部分 + 关键逻辑**，而不是通读整个 diff。
+After AI flags the issues, I **only review the flagged sections + critical logic**, instead of reading through the entire diff.
 
-这大概节省了我 60% 的 review 时间。
+This saves me roughly 60% of review time.
 
-### 第三步：AI 复查
+### Step 3: AI Re-Review
 
-我 review 完后，让 AI 再检查一遍：
-
-```
-"请对比原始 PR 和我的 review 意见，
-检查我有没有遗漏重要问题，
-以及我的 review 意见是否合理。"
-```
-
-这一步经常能发现我漏掉的问题，或者让我意识到某些 review 意见过于苛刻。
-
-## 开源项目中的实践
-
-对于开源项目，我设置了一个 AI review bot，规则如下：
+After I finish reviewing, I have AI check again:
 
 ```
-## 自动通过的 PR（AI 直接 approve）
-- 只修改了文档/注释
-- 只修改了测试用例
-- 依赖版本更新（patch 级别）
-
-## 需要人工 review 的 PR
-- 新增功能/API
-- 修改了核心逻辑
-- 修改了数据库 schema
-- 修改了构建配置
-
-## 自动打回的 PR
-- 包含敏感信息（密钥、token）
-- 二进制文件变更
-- 大幅修改了 lock 文件
-- 没有测试的代码变更
+"Compare the original PR with my review comments,
+check if I missed any important issues,
+and whether my review comments are reasonable."
 ```
 
-## 工具推荐
+This step often catches things I missed, or makes me realize some of my review comments were overly strict.
 
-| 工具 | 用途 | 推荐指数 |
-|------|------|---------|
-| GitHub Code Review API + GPT | 自定义 review bot | ⭐⭐⭐⭐⭐ |
-| CodeRabbit | 开箱即用的 AI review | ⭐⭐⭐⭐ |
-| SonarCloud | 静态分析 + AI 辅助 | ⭐⭐⭐⭐ |
-| OpenClaw + gongfeng AI CR | 内网代码审查 | ⭐⭐⭐⭐⭐ |
+## Practices for Open Source Projects
 
-## 总结
+For open source projects, I've set up an AI review bot with these rules:
 
-AI Code Review 不是要取代人类 reviewer，而是**让人类 reviewer 把精力花在最有价值的地方**。
+```
+## Auto-approved PRs (AI approves directly)
+- Documentation/comment changes only
+- Test case changes only
+- Dependency version updates (patch level)
 
-- ✅ AI 做规范性检查、常见 bug 检测、测试覆盖分析
-- ❌ 架构决策、业务逻辑、代码品味留给人类
-- 🔄 形成"AI 初筛 → 人深度 review → AI 复查"的闭环
+## PRs requiring human review
+- New features/APIs
+- Core logic changes
+- Database schema changes
+- Build configuration changes
 
-**记住**：AI review 是帮你**发现**问题，不是帮你**判断**问题。最终的责任还是在你手上。
+## Auto-rejected PRs
+- Contains sensitive information (keys, tokens)
+- Binary file changes
+- Major lock file changes
+- Code changes without tests
+```
+
+## Tool Recommendations
+
+| Tool | Use Case | Rating |
+|------|----------|--------|
+| GitHub Code Review API + GPT | Custom review bot | ⭐⭐⭐⭐⭐ |
+| CodeRabbit | Out-of-the-box AI review | ⭐⭐⭐⭐ |
+| SonarCloud | Static analysis + AI assistance | ⭐⭐⭐⭐ |
+| OpenClaw + gongfeng AI CR | Internal code review | ⭐⭐⭐⭐⭐ |
+
+## Wrapping Up
+
+AI Code Review isn't about replacing human reviewers—it's about **letting human reviewers spend their energy where it matters most**.
+
+- ✅ AI handles style checks, common bug detection, test coverage analysis
+- ❌ Leave architectural decisions, business logic, and code taste to humans
+- 🔄 Form a closed loop: "AI first pass → human deep review → AI re-review"
+
+**Remember**: AI review helps you **discover** issues, not **judge** them. The final responsibility is still yours.

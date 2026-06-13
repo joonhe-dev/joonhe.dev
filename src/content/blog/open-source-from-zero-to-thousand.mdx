@@ -1,424 +1,424 @@
 ---
-title: "开源项目从 0 到 1000 Star 的运营心得"
+title: "Growing an Open Source Project from 0 to 1,000 Stars"
 slug: open-source-from-zero-to-thousand
-excerpt: "开源不只是写代码。从项目定位、文档撰写、发布策略到社区维护，本文分享一个开源项目从零到 1000 Star 的完整运营经验。"
+excerpt: "Open source isn't just about writing code. From project positioning and documentation to launch strategy and community maintenance, here's the full playbook for taking an open source project from zero to 1,000 stars."
 date: "2026-06-21"
-tags: ["开源", "社区运营", "GitHub", "开发者关系", "个人品牌"]
+tags: ["Open Source", "Community Building", "GitHub", "Developer Relations", "Personal Brand"]
 ---
 
-## 引言
+## Introduction
 
-2020 年，我发布了第一个开源项目。那是一个简单的 React 表单验证库，功能完善、文档齐全、测试覆盖率达到 95%。发布后一个月，Star 数：**12**。其中 5 个是我自己点的。
+In 2020, I published my first open source project — a simple React form validation library. Polished features, thorough docs, 95% test coverage. One month after launch, the star count: **12**. Five of those were me.
 
-2023 年，我发布了另一个项目。这次我学聪明了。发布当天就上了 GitHub Trending，一周内突破 500 Star，三个月后达到 2000+。
+In 2023, I launched another project. This time I was smarter. It hit GitHub Trending on launch day, crossed 500 stars within a week, and reached 2,000+ in three months.
 
-两个项目的代码质量差不多，但结果天差地别。区别在哪？**运营。**
+The code quality of both projects was roughly the same, but the outcomes were worlds apart. The difference? **Marketing and community.**
 
-很多人觉得开源就是"写好代码，自然有人用"。这是最大的误解。代码只占 30%，剩下的 70% 是产品、文档、社区和运营。
+A lot of people think open source means "write good code and users will come." That's the biggest misconception. Code is maybe 30% of the equation; the other 70% is product, documentation, community, and operations.
 
-这篇文章是我从多个开源项目中总结的经验，希望能帮你少走弯路。
+This article captures lessons from multiple open source projects. Hope it saves you some trial and error.
 
-## 为什么做开源？
+## Why Do Open Source?
 
-在开始之前，先想清楚你的目标：
+Before you start, get clear on your goal:
 
-| 目标 | 需要投入 | 回报周期 | 关键指标 |
-|------|----------|----------|----------|
-| 个人品牌 | 中 | 6-12 个月 | Star 数、关注者、演讲邀请 |
-| 技术影响力 | 高 | 12-24 个月 | 被引用数、企业采用、行业认可 |
-| 职业机会 | 中 | 3-6 个月 | 招聘私信、面试邀约 |
-| 变现 | 高 | 12+ 个月 | Sponsor 收入、付费模板、咨询 |
-| 解决自己的问题 | 低 | 即时 | 自己用着爽 |
+| Goal | Investment Needed | Payback Period | Key Metric |
+|------|-------------------|----------------|------------|
+| Personal brand | Medium | 6–12 months | Stars, followers, speaking invites |
+| Technical influence | High | 12–24 months | Citations, enterprise adoption, industry recognition |
+| Career opportunities | Medium | 3–6 months | Recruiter DMs, interview invites |
+| Monetization | High | 12+ months | Sponsor income, paid templates, consulting |
+| Scratching your own itch | Low | Immediate | Your own workflow improves |
 
-**没有明确目标的开源项目，大概率会烂尾。** 这不是道德问题，是人性问题——没有正反馈，你很难持续投入。
+**An open source project without a clear goal will likely end up abandoned.** This isn't a moral judgment — it's human nature. Without positive feedback loops, it's hard to sustain the effort.
 
-我的建议：**先以"解决自己的问题"为目标启动，如果项目有起色，再考虑其他目标。**
+My advice: **start by scratching your own itch. If the project gains traction, then consider broader goals.**
 
-## 项目定位：解决一个你真正遇到的问题
+## Project Positioning: Solve a Problem You Actually Have
 
-### 为什么"自己的问题"是最好的起点？
+### Why "Your Own Problem" Is the Best Starting Point
 
-观察 GitHub 上最成功的开源项目，绝大多数都是作者为了解决自己的问题而创建的：
+Look at the most successful open source projects on GitHub — the vast majority were created because the author needed to solve their own problem:
 
-- **Vue.js** — 尤雨溪觉得 Angular 太重了
-- **Tailwind CSS** — Adam Wathan 觉得写 CSS 类名太麻烦
-- **Supabase** — 团队觉得 Firebase 不够开放
-- **shadcn/ui** — 作者觉得现有的组件库不够灵活
+- **Vue.js** — Evan You thought Angular was too heavy
+- **Tailwind CSS** — Adam Wathan was tired of writing CSS class names
+- **Supabase** — The team felt Firebase wasn't open enough
+- **shadcn/ui** — The author felt existing component libraries weren't flexible enough
 
-**你真正遇到的问题，大概率也是别人的问题。** 这就是产品市场契合（PMF）。
+**If you genuinely have a problem, chances are others do too.** That's product-market fit (PMF) in a nutshell.
 
-### 如何验证你的想法？
+### How to Validate Your Idea
 
-在写一行代码之前，先做验证：
-
-```markdown
-## 验证清单
-
-1. 搜索同类项目
-   - 有没有类似的项目？有多少 Star？
-   - 它们的 Issues 里有什么痛点？
-   - 它们的 README 评论区在抱怨什么？
-
-2. 和潜在用户聊
-   - 在 Twitter/Reddit 上发帖："我想做 X，你们需要吗？"
-   - 在 Hacker News 上搜索相关讨论
-   - 在开发者社区做调研
-
-3. 最小化验证
-   - 写一个 README 描述你的想法
-   - 发到社交媒体看反馈
-   - 如果有 10+ 人表示感兴趣，再开始写代码
-```
-
-### 定位的黄金法则
-
-```
-好的定位 = 具体的用户 × 具体的痛点 × 具体的解决方案
-
-❌ 差："一个 React 组件库"
-✅ 好："给 Tailwind CSS 用户的、开箱即用的、无障碍优先的 React UI 组件集合"
-
-❌ 差："一个 API 客户端"
-✅ 好："给 TypeScript 开发者用的、类型安全的、支持 GraphQL 和 REST 的 HTTP 客户端"
-```
-
-**越具体越好。** 泛泛而谈的项目会被淹没，精准定位的项目才能被记住。
-
-## 文档是第一生产力
-
-### README 是你的首页
-
-一个优秀的 README 应该让访问者在 30 秒内回答三个问题：
-
-1. **这是什么？** — 一句话说明
-2. **我为什么要用？** — 解决了什么痛点
-3. **怎么开始用？** — 一个可运行的示例
+Before writing a single line of code, do some validation:
 
 ```markdown
-# React Scan — 自动检测 React 应用中的性能问题
+## Validation Checklist
+
+1. Search for similar projects
+   - Are there existing alternatives? How many stars do they have?
+   - What pain points show up in their Issues?
+   - What are people complaining about in their README discussions?
+
+2. Talk to potential users
+   - Post on Twitter/Reddit: "I'm thinking of building X — would you use it?"
+   - Search Hacker News for related discussions
+   - Run surveys in developer communities
+
+3. Minimum validation
+   - Write a README describing your idea
+   - Share it on social media and gauge reactions
+   - If 10+ people say they're interested, then start coding
+```
+
+### The Golden Rule of Positioning
+
+```
+Good positioning = specific user × specific pain point × specific solution
+
+❌ Bad: "A React component library"
+✅ Good: "An accessible-first, batteries-included React UI component collection for Tailwind CSS users"
+
+❌ Bad: "An API client"
+✅ Good: "A type-safe HTTP client for TypeScript developers that supports both GraphQL and REST"
+```
+
+**The more specific, the better.** Vague projects get lost in the noise. Precisely positioned projects get remembered.
+
+## Documentation Is Your #1 Asset
+
+### README Is Your Landing Page
+
+A great README should let visitors answer three questions in 30 seconds:
+
+1. **What is this?** — One-sentence description
+2. **Why should I use it?** — What pain point does it solve
+3. **How do I get started?** — A runnable example
+
+```markdown
+# React Scan — Automatically Detect Performance Issues in React Apps
 
 [![npm](https://img.shields.io/npm/v/react-scan)](https://www.npmjs.com/package/react-scan)
 [![GitHub Stars](https://img.shields.io/github/stars/yourname/react-scan)](https://github.com/yourname/react-scan)
 
-React Scan 会在你的开发环境中自动检测不必要的重渲染、过大的组件树和低效的 Hooks 依赖。
+React Scan automatically detects unnecessary re-renders, oversized component trees, and inefficient Hook dependencies in your dev environment.
 
-## 为什么用 React Scan？
+## Why React Scan?
 
-现有的 React 性能工具（React DevTools Profiler、Why Did You Render）要么需要手动操作，要么配置复杂。React Scan 零配置，即插即用。
+Existing React performance tools (React DevTools Profiler, Why Did You Render) either require manual effort or complex configuration. React Scan is zero-config, plug-and-play.
 
-## 快速开始
+## Quick Start
 
 ```bash
 npm install react-scan
 ```
 
 ```javascript
-// 在应用入口文件顶部引入
+// Import at the top of your app entry file
 import 'react-scan'
 
-// 打开浏览器控制台，就能看到性能报告
+// Open the browser console to see the performance report
 ```
 
-## 功能
+## Features
 
-- ✅ 自动检测不必要的重渲染
-- ✅ 零配置，即插即用
-- ✅ 支持 React 16.8+
-- ✅ TypeScript 类型支持
-- ✅ 开发环境专用，生产环境零开销
+- ✅ Automatically detect unnecessary re-renders
+- ✅ Zero config, plug and play
+- ✅ Supports React 16.8+
+- ✅ TypeScript support
+- ✅ Dev-only, zero production overhead
 ```
 
-### 文档的层次结构
+### Documentation Layers
 
-| 文档 | 读者 | 关键内容 |
-|------|------|----------|
-| README | 所有访问者 | 项目介绍、快速开始、核心功能 |
-| 贡献指南 | 潜在贡献者 | 如何提 Issue、如何提交 PR、代码规范 |
-| Changelog | 现有用户 | 每个版本的变更、破坏性变更、升级指南 |
-| API 文档 | 集成开发者 | 所有 API 的详细说明和示例 |
-| 教程 | 新手用户 | 从零开始的完整教程 |
+| Document | Audience | Key Content |
+|----------|----------|-------------|
+| README | All visitors | Project intro, quick start, core features |
+| Contributing guide | Potential contributors | How to file issues, submit PRs, code standards |
+| Changelog | Existing users | Per-version changes, breaking changes, upgrade guides |
+| API docs | Integration developers | Detailed descriptions and examples for every API |
+| Tutorials | New users | Complete walkthroughs from scratch |
 
-### 文档的"80/20 法则"
+### The 80/20 Rule of Documentation
 
 ```
-80% 的用户只需要 20% 的文档：
-- 一个能运行的示例
-- 一个清晰的 API 速查表
-- 一个常见问题解答
+80% of users only need 20% of the docs:
+- One working example
+- One clear API cheat sheet
+- One FAQ
 
-把 80% 的精力放在这 20% 的文档上。
+Spend 80% of your doc effort on that 20%.
 ```
 
-## 发布策略
+## Launch Strategy
 
-### 发布前的准备清单
+### Pre-Launch Checklist
 
 ```markdown
-## 发布前 Checklist
+## Launch Checklist
 
-### 代码
-- [ ] 完整的 README（含 Logo、徽章、示例）
-- [ ] 清晰的贡献指南（CONTRIBUTING.md）
-- [ ] 详细的 Changelog（CHANGELOG.md）
-- [ ] 代码规范（ESLint、Prettier 配置）
-- [ ] CI/CD 配置（GitHub Actions）
-- [ ] 单元测试覆盖核心功能
-- [ ] 示例项目（examples/ 目录）
+### Code
+- [ ] Complete README (with logo, badges, examples)
+- [ ] Clear contributing guide (CONTRIBUTING.md)
+- [ ] Detailed changelog (CHANGELOG.md)
+- [ ] Code standards (ESLint, Prettier config)
+- [ ] CI/CD setup (GitHub Actions)
+- [ ] Unit tests covering core functionality
+- [ ] Example projects (examples/ directory)
 
-### 社区
-- [ ] 创建 GitHub Discussions（用于问答和讨论）
-- [ ] 配置 Issue 模板（Bug Report + Feature Request）
-- [ ] 创建 Discord 或 Slack 频道
-- [ ] 设置 Code of Conduct
+### Community
+- [ ] Create GitHub Discussions (for Q&A and discussion)
+- [ ] Set up Issue templates (Bug Report + Feature Request)
+- [ ] Create a Discord or Slack channel
+- [ ] Set up a Code of Conduct
 
-### 营销
-- [ ] 准备好发布推文（含截图/GIF）
-- [ ] 准备好 Hacker News 发布帖
-- [ ] 准备好 Reddit 发布帖
-- [ ] 联系相关领域的 KOL
-- [ ] 准备 Demo 视频（可选）
+### Marketing
+- [ ] Prepare launch tweet (with screenshots/GIF)
+- [ ] Prepare Hacker News Show HN post
+- [ ] Prepare Reddit post
+- [ ] Reach out to KOLs in the space
+- [ ] Prepare a demo video (optional)
 ```
 
-### 发布渠道优先级
+### Launch Channel Priority
 
 ```
 Day 1:
-  1. Hacker News（Show HN）
-  2. Twitter/X（带截图/GIF 的推文）
-  3. 相关技术社区（如 React 相关的 Discord/Slack）
+  1. Hacker News (Show HN)
+  2. Twitter/X (tweet with screenshots/GIF)
+  3. Relevant tech communities (e.g., React Discords/Slacks)
 
 Day 2-3:
-  4. Reddit（r/javascript、r/reactjs 等）
-  5. Dev.to（写一篇介绍文章）
-  6. 个人博客
+  4. Reddit (r/javascript, r/reactjs, etc.)
+  5. Dev.to (write an intro article)
+  6. Personal blog
 
 Week 1:
-  7. 联系技术媒体（如 InfoQ、掘金）
-  8. 联系 KOL 转发
-  9. 在相关 Issue 中提及（不要 spam）
+  7. Reach out to tech media (e.g., InfoQ, Dev.to)
+  8. Ask KOLs to retweet/share
+  9. Mention in relevant Issues (don't spam)
 
 Month 1:
-  10. 写一篇深度技术文章
-  11. 制作视频教程
-  12. 参加线上/线下技术分享
+  10. Write a deep-dive technical article
+  11. Create a video tutorial
+  12. Speak at online/offline meetups
 ```
 
-### 发布时机
+### Launch Timing
 
 ```
-最佳发布时间（UTC）：
-  - Hacker News: 周一至周四 9:00-11:00（美国东部时间）
-  - Twitter: 周二至周四 10:00-12:00（你的目标时区）
-  - Reddit: 周二至周四 12:00-14:00（美国东部时间）
+Best launch times (UTC):
+  - Hacker News: Mon–Thu 9:00–11:00 AM ET
+  - Twitter: Tue–Thu 10:00 AM–12:00 PM (your target timezone)
+  - Reddit: Tue–Thu 12:00–2:00 PM ET
 
-避免：
-  - 周末发布（流量最低）
-  - 大型技术会议期间（注意力被分散）
-  - 节假日（尤其是圣诞节到新年）
+Avoid:
+  - Weekend launches (lowest traffic)
+  - Major tech conferences (attention is scattered)
+  - Holidays (especially Christmas through New Year)
 ```
 
-## 社区维护
+## Community Maintenance
 
-### Issue 管理
+### Issue Management
 
 ```markdown
-## Issue 处理流程
+## Issue Handling Workflow
 
-### 新 Issue 分类
-1. Bug Report → 标记 bug，分配优先级
-2. Feature Request → 标记 enhancement，讨论必要性
-3. 问题求助 → 标记 question，引导到 Discussions
-4. 无意义 → 礼貌关闭，引导到 Discussions
+### New Issue Triage
+1. Bug Report → Label as bug, assign priority
+2. Feature Request → Label as enhancement, discuss necessity
+3. Question → Label as question, redirect to Discussions
+4. Off-topic → Politely close, redirect to Discussions
 
-### 响应时间目标
-- Critical Bug: 24 小时内回复
-- 普通 Bug: 48 小时内回复
-- Feature Request: 一周内回复
-- 问题求助: 72 小时内回复
+### Response Time Targets
+- Critical Bug: Respond within 24 hours
+- Regular Bug: Respond within 48 hours
+- Feature Request: Respond within 1 week
+- Question: Respond within 72 hours
 
-### 关闭策略
-- 重复 Issue → 关闭并链接到已有 Issue
-- 超出范围 → 礼貌解释并关闭
-- 长期无活动 → 标记 stale，30 天后关闭
+### Closing Strategy
+- Duplicate → Close and link to existing issue
+- Out of scope → Politely explain and close
+- Stale → Mark as stale, close after 30 days of inactivity
 ```
 
-### PR Review 原则
+### PR Review Principles
 
 ```markdown
-## PR Review 原则
+## PR Review Principles
 
-1. **先感谢，再提意见**
-   - "感谢你的贡献！有几个小建议..."
-   - 而不是 "这里错了，那里也不对"
+1. **Thank first, then suggest**
+   - "Thanks for the contribution! A few small suggestions..."
+   - Not "This is wrong, that's wrong too"
 
-2. **解释为什么**
-   - "建议用 Map 替代 Object，因为性能更好"
-   - 而不是 "用 Map"
+2. **Explain why**
+   - "Consider using Map instead of Object — it performs better"
+   - Not "Use Map"
 
-3. **给示例**
-   - "可以这样改："
-   - 附上代码片段
+3. **Give examples**
+   - "You could do it like this:"
+   - Attach a code snippet
 
-4. **及时回复**
-   - 24 小时内回复新 PR
-   - 48 小时内完成 Review
+4. **Respond promptly**
+   - Acknowledge new PRs within 24 hours
+   - Complete reviews within 48 hours
 
-5. **鼓励新人**
-   - 给 good first issue 标签
-   - 在 PR 中指导
-   - 合并后感谢
+5. **Encourage newcomers**
+   - Label good first issues
+   - Guide contributors in the PR
+   - Thank them after merge
 ```
 
-### Discord/Slack 运营
+### Discord/Slack Operations
 
 ```markdown
-## 社区频道结构
+## Community Channel Structure
 
-#general — 闲聊和公告
-#help — 使用问题求助
-#showcase — 用户展示用项目做了什么
-#contributing — 贡献者讨论
-#ideas — 功能建议
-#changelog — 版本更新通知
+#general — Chat and announcements
+#help — Usage questions and support
+#showcase — Users showing off what they built
+#contributing — Contributor discussions
+#ideas — Feature suggestions
+#changelog — Release notes
 
-## 运营节奏
+## Operating Rhythm
 
-每日：
-- 回复 help 频道的问题
-- 查看 general 频道的讨论
+Daily:
+- Reply to questions in #help
+- Check discussions in #general
 
-每周：
-- 发一次项目更新（新功能、修复、社区动态）
-- 在 showcase 频道点赞用户作品
+Weekly:
+- Post a project update (new features, fixes, community news)
+- Like user projects in #showcase
 
-每月：
-- 发一次月度总结
-- 组织一次线上交流
+Monthly:
+- Post a monthly recap
+- Host an online meetup
 ```
 
-## 从 100 到 1000 Star 的关键节点
+## Key Milestones from 100 to 1,000 Stars
 
-### 0-100 Star：验证期
+### 0–100 Stars: Validation Phase
 
-**目标：验证项目有价值**
+**Goal: Validate that the project provides value**
 
-- 关注来自你主动推广的渠道
-- 用户主要是你的社交圈和早期采用者
-- 关键指标：Issue 数量、PR 数量、用户反馈
+- Traffic comes mostly from your own promotion
+- Users are primarily from your social circle and early adopters
+- Key metrics: Issue count, PR count, user feedback
 
-**行动：**
-- 每天回复所有 Issue 和 PR
-- 主动在相关社区分享
-- 收集用户反馈，快速迭代
+**Actions:**
+- Reply to every Issue and PR daily
+- Proactively share in relevant communities
+- Collect user feedback, iterate fast
 
-### 100-500 Star：增长期
+### 100–500 Stars: Growth Phase
 
-**目标：建立社区基础**
+**Goal: Build a community foundation**
 
-- 开始有自然流量
-- 出现第一个外部贡献者
-- 关键指标：Star 增长曲线、Contributor 数量
+- Organic traffic starts appearing
+- First external contributor shows up
+- Key metrics: Star growth curve, contributor count
 
-**行动：**
-- 完善文档和贡献指南
-- 标记 good first issue
-- 开始写技术文章
-- 制作示例项目
+**Actions:**
+- Polish docs and contributing guide
+- Label good first issues
+- Start writing technical articles
+- Build example projects
 
-### 500-1000 Star：爆发期
+### 500–1,000 Stars: Breakout Phase
 
-**目标：形成品牌效应**
+**Goal: Build brand momentum**
 
-- 出现在 GitHub 推荐和 Trending
-- 被知名项目或公司采用
-- 关键指标：被引用数、下载量、赞助收入
+- Appear in GitHub recommendations and Trending
+- Adopted by well-known projects or companies
+- Key metrics: Citations, downloads, sponsor revenue
 
-**行动：**
-- 建立社区（Discord/Slack）
-- 开始接受赞助
-- 参加技术会议分享
-- 考虑成立组织（Organization）
+**Actions:**
+- Set up a community (Discord/Slack)
+- Start accepting sponsorships
+- Speak at conferences
+- Consider creating a GitHub Organization
 
-## 变现路径
+## Monetization Paths
 
 ### 1. GitHub Sponsors
 
 ```markdown
-## 设置 Sponsors
+## Setting Up Sponsors
 
-前提条件：
-- 项目有 500+ Star
-- 有稳定的贡献者社区
-- 项目对用户有实际价值
+Prerequisites:
+- 500+ stars on the project
+- A stable community of contributors
+- The project delivers real value to users
 
-Sponsor 层级：
-- $5/月：在 README 致谢列表
-- $10/月：优先 Issue 回复
-- $50/月：企业 Logo 展示
-- $100/月：一对一技术支持
+Sponsor Tiers:
+- $5/mo: Thank-you listing in the README
+- $10/mo: Priority issue response
+- $50/mo: Company logo placement
+- $100/mo: One-on-one technical support
 
-实际收入参考：
-- 1000 Star 的项目：$50-200/月
-- 5000 Star 的项目：$500-2000/月
-- 10000+ Star 的项目：$2000-10000/月
+Realistic revenue benchmarks:
+- 1,000-star project: $50–200/mo
+- 5,000-star project: $500–2,000/mo
+- 10,000+ star project: $2,000–10,000/mo
 ```
 
-### 2. 付费模板/扩展
+### 2. Paid Templates/Extensions
 
 ```
-- 开源核心 + 付费高级功能
-- 开源 CLI + 付费云服务
-- 开源库 + 付费模板/主题
-- 开源工具 + 付费培训/咨询
+- Open-source core + paid premium features
+- Open-source CLI + paid cloud service
+- Open-source library + paid templates/themes
+- Open-source tool + paid training/consulting
 ```
 
-### 3. 咨询和培训
+### 3. Consulting and Training
 
 ```
-- 企业培训（$2000-5000/天）
-- 技术咨询（$150-300/小时）
-- 定制开发（按项目报价）
-- 代码审查（$500-2000/次）
+- Corporate training ($2,000–5,000/day)
+- Technical consulting ($150–300/hour)
+- Custom development (project-based pricing)
+- Code reviews ($500–2,000/review)
 ```
 
-## 我的踩坑经验
+## Lessons Learned the Hard Way
 
-### 坑 1：过早追求完美
+### Mistake 1: Chasing Perfection Too Early
 
-**错误：** 第一个版本就想做到完美，花了 3 个月写代码，结果发布时市场已经变了。
+**What I did wrong:** Tried to make the first version perfect. Spent 3 months coding, and by the time I launched, the market had already shifted.
 
-**教训：** **先发布，再迭代。** 第一个版本只需要解决核心问题，其他功能可以后续添加。
+**Lesson:** **Ship first, iterate later.** The first version only needs to solve the core problem. Everything else can come after.
 
-### 坑 2：忽视文档
+### Mistake 2: Neglecting Documentation
 
-**错误：** 觉得"代码写得好，文档不重要"，结果用户问的问题全是文档里该写的。
+**What I did wrong:** Thought "good code speaks for itself, docs don't matter." Turned out every question users asked was something the docs should have covered.
 
-**教训：** **写文档的时间至少是写代码时间的 50%。** 好的文档能把用户问题减少 80%。
+**Lesson:** **Spend at least 50% as much time on docs as on code.** Good documentation reduces user questions by 80%.
 
-### 坑 3：不设边界
+### Mistake 3: No Boundaries
 
-**错误：** 对每个 Issue 都说"好，我来做"，结果自己的时间被耗尽，项目变成一个烂摊子。
+**What I did wrong:** Said yes to every Issue — "Sure, I'll build that." Ended up burning out, and the project turned into a bloated mess.
 
-**教训：** **学会说"不"。** 超出项目范围的 Feature Request 要礼貌拒绝，或者引导用户自己实现。
+**Lesson:** **Learn to say no.** Politely decline Feature Requests that are out of scope, or guide users to implement them themselves.
 
-### 坑 4：忽视社区文化
+### Mistake 4: Ignoring Community Culture
 
-**错误：** 只关注代码质量，不关注社区氛围。结果社区里充满 toxic 的讨论，贡献者纷纷离开。
+**What I did wrong:** Focused only on code quality, not community vibe. The community filled up with toxic discussions, and contributors left one by one.
 
-**教训：** **社区文化比代码质量更重要。** 设定 Code of Conduct，及时处理不当行为，营造友善的社区氛围。
+**Lesson:** **Community culture matters more than code quality.** Set a Code of Conduct, deal with bad behavior promptly, and foster a welcoming atmosphere.
 
-## 总结
+## Summary
 
-开源项目从 0 到 1000 Star 的路径是清晰的：
+The path from 0 to 1,000 stars is clear:
 
-1. **定位** — 解决一个你真正遇到的问题，越具体越好
-2. **文档** — README 是首页，贡献指南是门面，Changelog 是信用
-3. **发布** — 选对渠道、选对时机、准备好所有材料
-4. **社区** — 及时回复、友善沟通、鼓励贡献
-5. **增长** — 从验证到增长到爆发，每个阶段做对的事
+1. **Positioning** — Solve a problem you actually have; the more specific, the better
+2. **Documentation** — README is your landing page, contributing guide is your storefront, changelog is your credibility
+3. **Launch** — Pick the right channels, the right timing, and have all your materials ready
+4. **Community** — Respond quickly, communicate kindly, encourage contributions
+5. **Growth** — Do the right thing at each stage, from validation to growth to breakout
 
-**最后一条建议：享受过程。** 开源不是 KPI 竞赛，而是一个学习和连接的过程。即使项目最终只有 100 Star，你学到的技能和认识的人，都是无价的。
+**One last piece of advice: enjoy the process.** Open source isn't a KPI race — it's a journey of learning and connecting. Even if your project tops out at 100 stars, the skills you pick up and the people you meet are priceless.
 
 ---
 
-*你的开源项目现在多少 Star 了？在运营过程中遇到过什么困难？欢迎在评论区分享你的故事。*
+*How many stars does your open source project have? What challenges have you hit along the way? Share your story in the comments.*

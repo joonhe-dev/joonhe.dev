@@ -1,148 +1,153 @@
 ---
-title: "AI 辅助编程：从"复制粘贴"到"结对编程"的进化"
+title: "AI-Assisted Programming: From Copy-Paste to Pair Programming"
 slug: ai-assisted-programming-evolution
-excerpt: "AI 代码助手不是搜索引擎的替代品，而是一个永远在线、永不疲倦的结对编程伙伴。问题是——你真的知道怎么和它配合吗？"
+excerpt: "AI code assistants aren't a replacement for search engines—they're an always-on, never-tired pair programming partner. The question is: do you really know how to work with one?"
 date: "2026-06-12"
-tags: ["AI", "开发实践", "LLM", "效率"]
+tags: ["AI", "Development Practices", "LLM", "Productivity"]
 ---
 
-## 一个尴尬的事实
+## An Awkward Truth
 
-过去两年，我见过太多开发者使用 AI 代码助手的方式是这样的：
+Over the past two years, I've seen way too many developers use AI code assistants like this:
 
-1. 遇到问题 → 打开 ChatGPT
-2. 粘贴一大段代码 → "帮我看看哪里错了"
-3. 拿到答案 → 复制粘贴回去
-4. 跑不通 → 回到步骤 1
+1. Run into a problem → open ChatGPT
+2. Paste a big chunk of code → "Help me find what's wrong"
+3. Get the answer → copy-paste it back
+4. It doesn't work → go back to step 1
 
-这不是 AI 辅助编程，这是**高级版 Stack Overflow**。
+That's not AI-assisted programming. That's **Stack Overflow on steroids**.
 
-真正的 AI 辅助编程，是人和 AI 形成一种**认知协作**关系。AI 处理它擅长的（模式匹配、代码生成、信息检索），人处理自己擅长的（架构决策、边界判断、价值判断）。
+Real AI-assisted programming is about forming a **cognitive collaboration** with AI. The AI handles what it's good at (pattern matching, code generation, information retrieval), and you handle what you're good at (architectural decisions, edge case judgment, value calls).
 
-## 误区一：把 AI 当搜索引擎用
+## Mistake #1: Treating AI Like a Search Engine
 
-### ❌ 错误做法
+### ❌ Wrong Approach
 
 ```typescript
-// 用户：帮我写一个 React 自定义 hook 来处理表单验证
-// AI：给你一个 useForm hook...
-// 用户：复制粘贴，完事
+// User: Write me a React custom hook for form validation
+// AI: Here's a useForm hook...
+// User: Copy-paste, done
 ```
 
-### ✅ 正确做法
+### ✅ Right Approach
 
 ```typescript
-// 用户：我需要一个表单验证方案，要求：
-// 1. 支持动态字段（用户可添加/删除字段）
-// 2. 异步校验（检查用户名是否已被注册）
-// 3. 错误信息要支持 i18n
-// 4. 性能要求：大表单（50+字段）不能卡顿
+// User: I need a form validation solution with these requirements:
+// 1. Support dynamic fields (users can add/remove fields)
+// 2. Async validation (check if username is already taken)
+// 3. Error messages must support i18n
+// 4. Performance: large forms (50+ fields) must not lag
 //
-// 我目前的思路是用 React Hook Form + Zod，
-// 但对动态字段部分的类型推导不太确定。
-// 你能帮我分析一下几种方案的 trade-off 吗？
+// My current thinking is to use React Hook Form + Zod,
+// but I'm not sure about the type inference for the dynamic fields part.
+// Can you help me analyze the trade-offs of different approaches?
 
-// AI 会给出方案对比，然后你选择后再生成代码
+// AI will give you a comparison, then you choose before it generates code
 ```
 
-**关键区别**：你不是在"要代码"，而是在**讨论方案**。AI 知道上下文后，生成的代码质量完全不同。
+**The key difference**: You're not "asking for code"—you're **discussing approaches**. When AI has proper context, the code it generates is on a completely different level.
 
-## 误区二：不给 AI 上下文
+## Mistake #2: Not Giving AI Context
 
-AI 没有"读心术"。你给的信息越少，它猜得越离谱。
+AI can't read minds. The less information you give it, the more wildly it guesses.
 
-### AI 友好的 Prompt 模板
-
-```
-## 背景
-[项目/模块的简要描述]
-
-## 当前状态
-[已有的代码结构、关键接口]
-
-## 目标
-[要解决什么问题]
-
-## 约束
-[性能要求、兼容性、已有技术栈]
-
-## 我的思路
-[你初步的想法，让 AI 在这个基础上优化]
-```
-
-**真实案例**：我之前写一个文件上传组件，第一次 prompt 只说了"帮我写个文件上传"，AI 给了一个基础的 input[type=file]。第二次我补充了"需要支持分片上传、断点续传、秒传验证、并发控制"，AI 给出的方案直接可用，节省了我至少半天调研时间。
-
-## 误区三：盲目信任 AI 生成的代码
-
-这是最危险的。AI 生成的代码看起来**非常自信**，但可能：
-
-- 🐛 用了不存在的 API
-- 🔒 有安全漏洞（SQL 注入、XSS）
-- ⚡ 性能极差（O(n³) 的算法）
-- 📦 引入了不必要的依赖
-
-### 我的 Code Review 清单
-
-每次使用 AI 生成的代码，我都会过一遍：
-
-- [ ] **编译/类型检查** — TypeScript 编译通过了？
-- [ ] **边界情况** — 空值、异常输入、并发场景？
-- [ ] **安全性** — 用户输入有 sanitize 吗？
-- [ ] **性能** — 有没有不必要的循环、重复请求？
-- [ ] **可维护性** — 别人看得懂吗？有注释吗？
-- [ ] **测试** — 现有测试还能过吗？
-
-## 误区四：不会"追问"
-
-AI 第一次给出的方案往往不是最好的。**好的 AI 协作是一个迭代过程**。
-
-### 追问技巧
+### An AI-Friendly Prompt Template
 
 ```
-"这个方案在数据量大的时候性能怎么样？"
-"有没有更简洁的实现方式？"
-"如果换成 Web Worker 处理，会有什么 trade-off？"
-"这个实现的边界情况是什么？"
-"能帮我生成对应的单元测试吗？"
+## Background
+[Brief description of the project/module]
+
+## Current State
+[Existing code structure, key interfaces]
+
+## Goal
+[What problem to solve]
+
+## Constraints
+[Performance requirements, compatibility, existing tech stack]
+
+## My Thinking
+[Your initial thoughts—let AI optimize from here]
 ```
 
-我经常让 AI 自己 critique 自己的方案——"请指出这个实现可能存在的问题"，往往能发现不少盲点。
+**Real example**: I was building a file upload component. My first prompt just said "help me write a file upload," and AI gave me a basic input[type=file]. The second time, I added "needs chunked upload, resumable upload, instant upload verification, and concurrency control." The solution AI came up with was ready to use and saved me at least half a day of research.
 
-## 我的 AI 辅助编程工作流
+## Mistake #3: Blindly Trusting AI-Generated Code
+
+This is the most dangerous one. AI-generated code looks **extremely confident**, but it might:
+
+- 🐛 Use non-existent APIs
+- 🔒 Have security vulnerabilities (SQL injection, XSS)
+- ⚡ Perform terribly (O(n³) algorithms)
+- 📦 Introduce unnecessary dependencies
+
+### My Code Review Checklist
+
+Every time I use AI-generated code, I run through this:
+
+- [ ] **Compile/type check** — Does TypeScript compile cleanly?
+- [ ] **Edge cases** — Null values, unexpected inputs, concurrency scenarios?
+- [ ] **Security** — Is user input sanitized?
+- [ ] **Performance** — Any unnecessary loops, duplicate requests?
+- [ ] **Maintainability** — Can others understand it? Are there comments?
+- [ ] **Tests** — Do existing tests still pass?
+
+## Mistake #4: Not Knowing How to Follow Up
+
+AI's first answer is rarely the best one. **Good AI collaboration is an iterative process**.
+
+### Follow-Up Techniques
+
+```
+"How does this approach perform with large datasets?"
+"Is there a more concise implementation?"
+"What are the trade-offs if we use a Web Worker instead?"
+"What edge cases does this implementation miss?"
+"Can you generate corresponding unit tests?"
+```
+
+I often ask AI to critique its own solutions—"Point out potential issues with this implementation." It usually uncovers blind spots I missed.
+
+## My AI-Assisted Programming Workflow
 
 ```
 ┌─────────────┐
-│  需求分析    │ ← 用 AI 做方案调研和可行性分析
+│  Requirement │ ← Use AI for research and feasibility analysis
+│   Analysis   │
 └──────┬──────┘
        ↓
 ┌─────────────┐
-│  接口设计    │ ← 和 AI 讨论 API 设计，让 AI 指出遗漏
+│  Interface   │ ← Discuss API design with AI, let it spot gaps
+│   Design     │
 └──────┬──────┘
        ↓
 ┌─────────────┐
-│  代码生成    │ ← 给 AI 详细上下文，分模块生成
+│    Code      │ ← Give AI detailed context, generate module by module
+│  Generation  │
 └──────┬──────┘
        ↓
 ┌─────────────┐
-│  Code Review│ ← 让 AI 做第一轮 review
+│ Code Review  │ ← Let AI do the first round of review
 └──────┬──────┘
        ↓
 ┌─────────────┐
-│  测试生成    │ ← AI 生成测试用例，人补充边界
+│    Test      │ ← AI generates test cases, you fill in edge cases
+│  Generation  │
 └──────┬──────┘
        ↓
 ┌─────────────┐
-│  文档/注释   │ ← AI 生成文档，人确认准确性
+│  Docs &      │ ← AI generates documentation, you verify accuracy
+│  Comments    │
 └─────────────┘
 ```
 
-## 总结
+## Wrapping Up
 
-AI 辅助编程的核心不是"让 AI 写代码"，而是**让 AI 帮你思考得更快、更全面**。
+The core of AI-assisted programming isn't "making AI write code"—it's **letting AI help you think faster and more comprehensively**.
 
-- 把它当**结对编程伙伴**，而不是代码生成器
-- 给足上下文，**不要让它猜**
-- **永远 review** AI 生成的代码
-- **迭代追问**，不要接受第一个答案
+- Treat it as a **pair programming partner**, not a code generator
+- Give it full context—**don't make it guess**
+- **Always review** AI-generated code
+- **Iterate and follow up**—never accept the first answer
 
-最后送大家一句话：**AI 不会取代开发者，但会用 AI 的开发者会取代不会用的。**
+One last thought: **AI won't replace developers, but developers who use AI will replace those who don't.**

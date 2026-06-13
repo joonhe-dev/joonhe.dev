@@ -4,7 +4,6 @@ import { siteConfig } from "@/lib/site";
 export default function Home() {
   return (
     <div className="flex flex-col items-center py-16 text-center">
-      {/* SEO: H1 标题包含核心关键词 */}
       <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
         Hi, I&apos;m{" "}
         <span className="text-indigo-500">{siteConfig.author}</span>
@@ -13,7 +12,7 @@ export default function Home() {
         Full-Stack Developer · Indie Maker · Building in Public
       </p>
       <p className="mt-2 max-w-xl text-sm text-zinc-500 dark:text-zinc-500">
-        分享 AI 辅助编程、Web 开发最佳实践、开源项目经验与远程工作者效率工具
+        Sharing AI-assisted programming, web development best practices, open-source project experience, and productivity tools for remote workers
       </p>
 
       <div className="mt-8 flex items-center gap-4">
@@ -21,19 +20,18 @@ export default function Home() {
           href="/blog"
           className="rounded-full bg-zinc-900 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
         >
-          AI 编程博客 →
+          AI Dev Blog →
         </Link>
         <Link
           href="/projects"
           className="rounded-full border border-zinc-300 px-6 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
         >
-          开源项目
+          Open Source
         </Link>
       </div>
 
-      {/* 最新文章推荐 - SEO 友好 */}
       <section className="mt-16 w-full">
-        <h2 className="text-left text-xl font-semibold">最新文章</h2>
+        <h2 className="text-left text-xl font-semibold">Latest Posts</h2>
         <div className="mt-4 grid gap-6 sm:grid-cols-3">
           <Link
             href="/blog/ai-web-development-workflow"
@@ -41,10 +39,10 @@ export default function Home() {
           >
             <div className="text-2xl">🛠️</div>
             <h3 className="mt-3 font-semibold group-hover:text-indigo-500">
-              AI 辅助 Web 开发实战
+              AI-Assisted Web Development
             </h3>
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              从 Prompt 到生产的最佳工作流
+              The best workflow from prompt to production
             </p>
           </Link>
           <Link
@@ -53,10 +51,10 @@ export default function Home() {
           >
             <div className="text-2xl">💡</div>
             <h3 className="mt-3 font-semibold group-hover:text-indigo-500">
-              Web 开发者 Prompt 工程指南
+              Prompt Engineering for Web Devs
             </h3>
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              让 AI 写出你想要的代码
+              Making AI write the code you want
             </p>
           </Link>
           <Link
@@ -65,25 +63,24 @@ export default function Home() {
           >
             <div className="text-2xl">🚀</div>
             <h3 className="mt-3 font-semibold group-hover:text-indigo-500">
-              远程开发者 AI 工具箱
+              Remote Dev AI Toolkit
             </h3>
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              2026 年必备的 10 个 AI 工具
+              10 essential AI tools for 2026
             </p>
           </Link>
         </div>
       </section>
 
-      {/* 分类导航 - SEO 内部链接 */}
       <section className="mt-12 w-full">
-        <h2 className="text-left text-xl font-semibold">热门话题</h2>
+        <h2 className="text-left text-xl font-semibold">Popular Topics</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           {[
-            { label: "AI 编程", href: "/blog" },
-            { label: "Web 开发", href: "/blog" },
-            { label: "远程工作", href: "/blog/ai-tools-remote-developer" },
-            { label: "开源项目", href: "/projects" },
-            { label: "Prompt 工程", href: "/blog/ai-prompt-engineering-web-dev" },
+            { label: "AI Programming", href: "/blog" },
+            { label: "Web Development", href: "/blog" },
+            { label: "Remote Work", href: "/blog/ai-tools-remote-developer" },
+            { label: "Open Source", href: "/projects" },
+            { label: "Prompt Engineering", href: "/blog/ai-prompt-engineering-web-dev" },
             { label: "Code Review", href: "/blog/ai-code-review-practical-guide" },
           ].map((tag) => (
             <Link

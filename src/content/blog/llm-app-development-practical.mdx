@@ -1,76 +1,76 @@
 ---
-title: "LLM 应用开发实战：从 Prompt 到 RAG 到 Agent"
+title: "Building LLM Apps in Practice: From Prompts to RAG to Agents"
 slug: llm-app-development-practical
-excerpt: "LLM 应用开发有三个层次：Prompt 工程、RAG 架构、Agent 模式。本文从实战出发，用 TypeScript 代码示例，带你一步步搭建生产级的 LLM 应用。"
+excerpt: "LLM app development has three layers: Prompt Engineering, RAG architecture, and Agent patterns. This hands-on guide walks you through building production-grade LLM applications with TypeScript code examples."
 date: "2026-06-17"
-tags: ["LLM", "RAG", "Agent", "AI 应用", "Prompt 工程", "TypeScript"]
+tags: ["LLM", "RAG", "Agent", "AI Applications", "Prompt Engineering", "TypeScript"]
 ---
 
-## 引言
+## Introduction
 
-2023 年初，我第一次尝试用 GPT-3.5 做一个自动回复客服系统。当时的做法很简单：把用户问题粘到 Prompt 里，拿到回复直接返回。效果嘛——客户说"你们这个 AI 客服是不是喝多了"。
+In early 2023, I tried building an auto-reply customer service system with GPT-3.5. My approach was dead simple: paste the user's question into a prompt, get the reply, and return it. The result? A customer said, "Is your AI support drunk?"
 
-一年半后的今天，我已经用 LLM 搭建了多个生产级应用，包括知识库问答系统、代码审查助手、自动化报告生成器。踩过的坑可以写一本书。
+A year and a half later, I've built multiple production-grade LLM applications — knowledge base Q&A systems, code review assistants, automated report generators. I've made enough mistakes to fill a book.
 
-这篇文章是我对 LLM 应用开发的经验总结。我把 LLM 应用分为三个层次：
+This article is my experience report on LLM app development. I break LLM apps into three layers:
 
-1. **Prompt 工程** — 让 LLM 准确理解你的意图
-2. **RAG 架构** — 让 LLM 拥有你的私有知识
-3. **Agent 模式** — 让 LLM 能自主执行任务
+1. **Prompt Engineering** — Making the LLM understand your intent accurately
+2. **RAG Architecture** — Giving the LLM your private knowledge
+3. **Agent Patterns** — Letting the LLM execute tasks autonomously
 
-每个层次都有对应的代码示例和实战经验，希望能帮你少走弯路。
+Each layer comes with code examples and real-world lessons. Hope it saves you some pain.
 
-## 第一层：Prompt 工程
+## Layer 1: Prompt Engineering
 
-### 从"问问题"到"给指令"
+### From "Asking Questions" to "Giving Instructions"
 
-大多数人对 Prompt 的认知停留在"问问题"阶段：
+Most people's understanding of prompts stops at "asking questions":
 
 ```typescript
-// ❌ 错误做法：像问朋友一样问 LLM
-const prompt = "帮我写一个 React 组件，显示用户列表"
+// ❌ Wrong: asking the LLM like you'd ask a friend
+const prompt = "Help me write a React component that displays a user list"
 ```
 
-但生产级的 Prompt 应该是**结构化指令**：
+But production-grade prompts should be **structured instructions**:
 
 ```typescript
-// ✅ 正确做法：给 LLM 明确的角色、上下文、格式要求
+// ✅ Right: give the LLM a clear role, context, and format requirements
 const systemPrompt = `
-你是一个资深 React 开发者。你的任务是生成高质量、可维护的 React 组件代码。
+You are a senior React developer. Your task is to generate high-quality, maintainable React component code.
 
-## 约束条件
-- 使用 TypeScript + Tailwind CSS
-- 包含完整的类型定义
-- 遵循函数式组件 + Hooks 的最佳实践
-- 包含 JSDoc 注释
-- 不包含外部依赖（除了 React 和 Tailwind）
+## Constraints
+- Use TypeScript + Tailwind CSS
+- Include complete type definitions
+- Follow functional component + Hooks best practices
+- Include JSDoc comments
+- No external dependencies (except React and Tailwind)
 
-## 输出格式
-返回一个包含以下内容的代码块：
-1. 类型定义（interface / type）
-2. 组件实现
-3. 使用示例
+## Output Format
+Return a code block containing:
+1. Type definitions (interface / type)
+2. Component implementation
+3. Usage example
 `
 
 const userPrompt = `
-需求：显示用户列表的组件
-- 从 API 获取用户数据
-- 支持搜索和分页
-- 每页显示 10 条
-- 加载状态和空状态处理
+Requirement: A component that displays a user list
+- Fetch user data from an API
+- Support search and pagination
+- Show 10 items per page
+- Handle loading and empty states
 `
 ```
 
-### Few-shot 示例的力量
+### The Power of Few-Shot Examples
 
-对于复杂任务，给 LLM 提供示例比描述规则更有效：
+For complex tasks, giving the LLM examples beats describing rules:
 
 ```typescript
-// Few-shot 示例：让 LLM 学会你的代码风格
+// Few-shot examples: teach the LLM your code style
 const fewShotExamples = `
-## 示例 1：用户卡片组件
-输入：显示用户信息的卡片，包含头像、姓名、邮箱
-输出：
+## Example 1: User Card Component
+Input: A card displaying user info with avatar, name, and email
+Output:
 \`\`\`typescript
 interface UserCardProps {
   user: {
@@ -91,7 +91,7 @@ export function UserCard({ user, onEdit }: UserCardProps) {
       </div>
       {onEdit && (
         <button onClick={() => onEdit(user.id)} className="...">
-          编辑
+          Edit
         </button>
       )}
     </div>
@@ -99,44 +99,44 @@ export function UserCard({ user, onEdit }: UserCardProps) {
 }
 \`\`\`
 
-## 示例 2：数据表格组件
-输入：可排序、可筛选的数据表格
-输出：[类似风格的组件代码]
+## Example 2: Data Table Component
+Input: A sortable, filterable data table
+Output: [component code in a similar style]
 `
 
-const prompt = `${fewShotExamples}\n\n现在，请生成以下组件：\n${userPrompt}`
+const prompt = `${fewShotExamples}\n\nNow, generate the following component:\n${userPrompt}`
 ```
 
-### Chain-of-Thought（思维链）
+### Chain-of-Thought
 
-对于需要推理的任务，让 LLM 逐步思考：
+For tasks that require reasoning, guide the LLM to think step by step:
 
 ```typescript
-// ❌ 直接问结果
-const prompt = "这段代码有什么性能问题？"
+// ❌ Ask for the result directly
+const prompt = "What are the performance issues in this code?"
 
-// ✅ 引导 LLM 分步分析
+// ✅ Guide the LLM to analyze step by step
 const prompt = `
-请分析以下代码的性能问题。请按以下步骤思考：
+Analyze the performance issues in the following code. Think through these steps:
 
-1. 首先，确定这段代码的执行流程
-2. 然后，找出每个步骤的时间复杂度
-3. 接着，识别可能的性能瓶颈
-4. 最后，给出优化建议
+1. First, determine the execution flow of this code
+2. Then, identify the time complexity of each step
+3. Next, pinpoint potential performance bottlenecks
+4. Finally, provide optimization suggestions
 
-代码：
+Code:
 ${code}
 `
 ```
 
-### 结构化输出
+### Structured Output
 
-生产环境中，你需要 LLM 的输出是结构化的，而不是自由文本：
+In production, you need the LLM's output to be structured, not free-form text:
 
 ```typescript
 import { z } from 'zod'
 
-// 定义输出 schema
+// Define the output schema
 const CodeReviewSchema = z.object({
   score: z.number().min(1).max(10),
   issues: z.array(z.object({
@@ -148,64 +148,64 @@ const CodeReviewSchema = z.object({
   summary: z.string(),
 })
 
-// 在 Prompt 中指定输出格式
+// Specify output format in the prompt
 const prompt = `
-请 review 以下代码。以 JSON 格式返回结果，格式如下：
+Review the following code. Return the result in JSON format:
 {
-  "score": <1-10的数字>,
+  "score": <a number from 1-10>,
   "issues": [
     {
       "severity": "critical|major|minor|suggestion",
-      "line": <行号>,
-      "description": "问题描述",
-      "suggestion": "修改建议"
+      "line": <line number>,
+      "description": "description of the issue",
+      "suggestion": "fix suggestion"
     }
   ],
-  "summary": "总体评价"
+  "summary": "overall assessment"
 }
 
-代码：
+Code:
 ${code}
 `
 
-// 解析 LLM 返回的 JSON
+// Parse the LLM's JSON response
 const rawResponse = await llm.chat(prompt)
 const parsed = CodeReviewSchema.parse(JSON.parse(rawResponse))
 ```
 
-### Prompt 工程最佳实践总结
+### Prompt Engineering Best Practices Summary
 
-| 实践 | 说明 | 效果提升 |
-|------|------|----------|
-| 角色设定 | 给 LLM 一个明确的角色 | +20% 准确率 |
-| 结构化指令 | 用 Markdown 格式组织 Prompt | +15% 一致性 |
-| Few-shot 示例 | 提供 2-3 个示例 | +30% 质量 |
-| Chain-of-Thought | 引导逐步推理 | +40% 推理准确率 |
-| 结构化输出 | 指定输出格式和 schema | 减少解析错误 |
-| 温度控制 | 代码生成用 0-0.2，创意用 0.7-0.9 | 按需调整 |
+| Practice | What It Means | Improvement |
+|----------|---------------|-------------|
+| Role assignment | Give the LLM a clear role | +20% accuracy |
+| Structured instructions | Organize prompts with Markdown | +15% consistency |
+| Few-shot examples | Provide 2–3 examples | +30% quality |
+| Chain-of-Thought | Guide step-by-step reasoning | +40% reasoning accuracy |
+| Structured output | Specify output format and schema | Fewer parse errors |
+| Temperature control | 0–0.2 for code gen, 0.7–0.9 for creative tasks | Tune as needed |
 
-## 第二层：RAG 架构
+## Layer 2: RAG Architecture
 
-### 为什么需要 RAG？
+### Why RAG?
 
-LLM 的知识截止于训练数据。如果你问它"我们公司最新的 OKR 是什么"，它不可能知道。RAG（Retrieval-Augmented Generation）解决了这个问题：**先检索相关文档，再把文档作为上下文让 LLM 回答。**
+LLM knowledge is frozen at training time. Ask it "What are our company's latest OKRs?" and it won't have a clue. RAG (Retrieval-Augmented Generation) fixes this: **first retrieve relevant documents, then feed those documents as context for the LLM to answer.**
 
-### 一个完整的 RAG 实现
+### A Complete RAG Implementation
 
 ```typescript
 import { OpenAI } from 'openai'
 import { createClient } from '@supabase/supabase-js'
 
-// 1. 文档分块（Chunking）
+// 1. Document chunking
 function chunkDocument(text: string, chunkSize = 1000, overlap = 200): string[] {
   const chunks: string[] = []
   let start = 0
 
   while (start < text.length) {
     const end = start + chunkSize
-    // 尽量在段落边界切分
+    // Try to split at paragraph boundaries
     const chunk = text.slice(start, end)
-    const lastPeriod = chunk.lastIndexOf('。')
+    const lastPeriod = chunk.lastIndexOf('.')
     const actualEnd = lastPeriod > chunkSize * 0.5 ? lastPeriod + 1 : end
 
     chunks.push(text.slice(start, start + actualEnd))
@@ -215,7 +215,7 @@ function chunkDocument(text: string, chunkSize = 1000, overlap = 200): string[] 
   return chunks
 }
 
-// 2. 生成 Embedding 并存储
+// 2. Generate embeddings and store
 async function indexDocument(text: string, metadata: Record<string, any>) {
   const chunks = chunkDocument(text)
   const embeddings = await Promise.all(
@@ -232,21 +232,21 @@ async function indexDocument(text: string, metadata: Record<string, any>) {
     })
   )
 
-  // 存储到向量数据库
+  // Store in vector database
   const { error } = await supabase.from('documents').insert(embeddings)
   if (error) throw error
 }
 
-// 3. 检索相关文档
+// 3. Retrieve relevant documents
 async function retrieveRelevant(query: string, topK = 5) {
-  // 生成查询的 embedding
+  // Generate query embedding
   const response = await openai.embeddings.create({
     model: 'text-embedding-3-small',
     input: query,
   })
   const queryEmbedding = response.data[0].embedding
 
-  // 向量相似度搜索
+  // Vector similarity search
   const { data: documents } = await supabase.rpc('match_documents', {
     query_embedding: queryEmbedding,
     match_threshold: 0.7,
@@ -256,16 +256,16 @@ async function retrieveRelevant(query: string, topK = 5) {
   return documents
 }
 
-// 4. 生成回答
+// 4. Generate answer
 async function answerWithRag(query: string) {
   const relevantDocs = await retrieveRelevant(query)
 
   if (relevantDocs.length === 0) {
-    return "抱歉，我没有找到相关信息。"
+    return "Sorry, I couldn't find any relevant information."
   }
 
   const context = relevantDocs
-    .map((doc) => `[来源: ${doc.metadata.source}]\n${doc.content}`)
+    .map((doc) => `[Source: ${doc.metadata.source}]\n${doc.content}`)
     .join('\n\n---\n\n')
 
   const response = await openai.chat.completions.create({
@@ -273,11 +273,11 @@ async function answerWithRag(query: string) {
     messages: [
       {
         role: 'system',
-        content: `你是一个知识库问答助手。请基于以下上下文回答问题。
-如果上下文中没有相关信息，请明确说"没有找到相关信息"。
-引用来源时，请标注 [来源: xxx]。
+        content: `You are a knowledge base Q&A assistant. Answer the question based on the following context.
+If the context doesn't contain relevant information, say "No relevant information found" explicitly.
+When citing sources, tag them as [Source: xxx].
 
-上下文：
+Context:
 ${context}`,
       },
       {
@@ -291,28 +291,28 @@ ${context}`,
 }
 ```
 
-### PostgreSQL 向量搜索配置
+### PostgreSQL Vector Search Setup
 
-如果你用 Supabase（PostgreSQL + pgvector），需要先创建向量搜索函数：
+If you're using Supabase (PostgreSQL + pgvector), create the vector search function first:
 
 ```sql
--- 启用 pgvector 扩展
+-- Enable pgvector extension
 create extension if not exists vector;
 
--- 创建文档表
+-- Create documents table
 create table documents (
   id bigserial primary key,
   content text,
-  embedding vector(1536),  -- text-embedding-3-small 的维度
+  embedding vector(1536),  -- dimension for text-embedding-3-small
   metadata jsonb,
   created_at timestamptz default now()
 );
 
--- 创建向量索引（IVFFlat 适合百万级以下的数据）
+-- Create vector index (IVFFlat works well for data under a million rows)
 create index on documents using ivfflat (embedding vector_cosine_ops)
   with (lists = 100);
 
--- 向量相似度搜索函数
+-- Vector similarity search function
 create or replace function match_documents(
   query_embedding vector(1536),
   match_threshold float,
@@ -341,37 +341,37 @@ end;
 $$;
 ```
 
-### RAG 架构的关键决策
+### Key RAG Architecture Decisions
 
-| 决策点 | 选项 | 推荐 |
-|--------|------|------|
-| Chunk 策略 | 固定大小 / 语义分块 / 递归分块 | 语义分块（按段落/标题） |
-| Chunk 大小 | 256-2048 tokens | 1000 tokens（含 200 overlap） |
-| Embedding 模型 | text-embedding-3-small / ada-002 / 开源模型 | text-embedding-3-small（性价比最高） |
-| 向量数据库 | pgvector / Pinecone / Weaviate / Qdrant | pgvector（和 PostgreSQL 一起） |
-| 检索策略 | 向量搜索 / 关键词搜索 / 混合搜索 | 混合搜索（向量 + BM25） |
-| 重排序 | Cohere Rerank / 交叉编码器 | 数据量大时加 reranker |
+| Decision Point | Options | Recommendation |
+|----------------|---------|----------------|
+| Chunk strategy | Fixed-size / Semantic / Recursive | Semantic (by paragraph/heading) |
+| Chunk size | 256–2048 tokens | 1000 tokens (with 200 overlap) |
+| Embedding model | text-embedding-3-small / ada-002 / open-source | text-embedding-3-small (best value) |
+| Vector database | pgvector / Pinecone / Weaviate / Qdrant | pgvector (stays with PostgreSQL) |
+| Retrieval strategy | Vector search / Keyword search / Hybrid | Hybrid (vector + BM25) |
+| Reranking | Cohere Rerank / Cross-encoder | Add a reranker when data grows |
 
-### 检索增强策略
+### Retrieval Enhancement Strategies
 
-基础 RAG 在简单场景下够用，但生产环境需要更精细的策略：
+Basic RAG works for simple scenarios, but production needs finer strategies:
 
 ```typescript
-// 混合检索：向量搜索 + 关键词搜索
+// Hybrid retrieval: vector search + keyword search
 async function hybridSearch(query: string) {
-  // 向量搜索
+  // Vector search
   const vectorResults = await vectorSearch(query)
 
-  // 关键词搜索（使用 PostgreSQL 全文搜索）
+  // Keyword search (using PostgreSQL full-text search)
   const { data: keywordResults } = await supabase
     .from('documents')
     .select('*')
     .textSearch('content', query, {
       type: 'websearch',
-      config: 'chinese',
+      config: 'english',
     })
 
-  // 合并结果（加权融合）
+  // Merge results (weighted fusion)
   const merged = mergeResults(vectorResults, keywordResults, {
     vectorWeight: 0.7,
     keywordWeight: 0.3,
@@ -380,14 +380,14 @@ async function hybridSearch(query: string) {
   return merged
 }
 
-// 查询重写：将用户问题改写为更利于检索的形式
+// Query rewriting: reformulate the user's question for better retrieval
 async function rewriteQuery(userQuery: string): Promise<string> {
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {
         role: 'system',
-        content: '将用户问题改写为更适合文档检索的形式。只返回改写后的查询，不要解释。',
+        content: 'Rewrite the user question into a form that works better for document retrieval. Return only the rewritten query, no explanation.',
       },
       {
         role: 'user',
@@ -400,53 +400,53 @@ async function rewriteQuery(userQuery: string): Promise<string> {
 }
 ```
 
-## 第三层：Agent 模式
+## Layer 3: Agent Patterns
 
-### 从"问答"到"行动"
+### From "Answering" to "Acting"
 
-RAG 让 LLM 能回答问题，但 Agent 让 LLM 能**执行任务**。Agent 的核心是：LLM 作为一个"大脑"，决定调用什么工具、按什么顺序调用、如何处理结果。
+RAG lets the LLM answer questions, but Agents let the LLM **execute tasks**. The core idea: the LLM acts as a "brain," deciding which tools to call, in what order, and how to process results.
 
-### 一个简单的 Agent 实现
+### A Simple Agent Implementation
 
 ```typescript
 import { OpenAI } from 'openai'
 import { z } from 'zod'
 
-// 定义工具
+// Define tools
 const tools = {
   searchWeb: {
-    description: '搜索互联网获取最新信息',
+    description: 'Search the internet for up-to-date information',
     parameters: z.object({
-      query: z.string().describe('搜索关键词'),
+      query: z.string().describe('search keywords'),
     }),
     async execute({ query }: { query: string }) {
       return await webSearch(query)
     },
   },
   readUrl: {
-    description: '读取指定 URL 的内容',
+    description: 'Read the content at a given URL',
     parameters: z.object({
-      url: z.string().describe('要读取的 URL'),
+      url: z.string().describe('the URL to read'),
     }),
     async execute({ url }: { url: string }) {
       return await fetchAndExtract(url)
     },
   },
   calculate: {
-    description: '执行数学计算',
+    description: 'Perform a math calculation',
     parameters: z.object({
-      expression: z.string().describe('数学表达式，如 "2 + 3 * 4"'),
+      expression: z.string().describe('math expression, e.g. "2 + 3 * 4"'),
     }),
     async execute({ expression }: { expression: string }) {
       return String(eval(expression))
     },
   },
   sendEmail: {
-    description: '发送邮件',
+    description: 'Send an email',
     parameters: z.object({
-      to: z.string().describe('收件人邮箱'),
-      subject: z.string().describe('邮件主题'),
-      body: z.string().describe('邮件正文'),
+      to: z.string().describe('recipient email'),
+      subject: z.string().describe('email subject'),
+      body: z.string().describe('email body'),
     }),
     async execute({ to, subject, body }: { to: string; subject: string; body: string }) {
       return await emailService.send(to, subject, body)
@@ -454,24 +454,24 @@ const tools = {
   },
 }
 
-// Agent 主循环
+// Agent main loop
 async function agentLoop(task: string) {
   const messages: any[] = [
     {
       role: 'system',
-      content: `你是一个 AI 助手，可以调用工具来完成任务。
-可用的工具：
+      content: `You are an AI assistant that can call tools to complete tasks.
+Available tools:
 ${Object.entries(tools)
   .map(
     ([name, tool]) =>
-      `- ${name}: ${tool.description}\n  参数: ${JSON.stringify(tool.parameters.shape)}`
+      `- ${name}: ${tool.description}\n  Parameters: ${JSON.stringify(tool.parameters.shape)}`
   )
   .join('\n')}
 
-当你需要调用工具时，返回以下格式：
-{"tool": "工具名", "args": {参数对象}}
+When you need to call a tool, return this format:
+{"tool": "tool_name", "args": {parameter object}}
 
-当你完成任务后，返回最终结果。`,
+When the task is complete, return the final result.`,
     },
     { role: 'user', content: task },
   ]
@@ -485,7 +485,7 @@ ${Object.entries(tools)
 
     const content = response.choices[0].message.content
 
-    // 尝试解析工具调用
+    // Try to parse a tool call
     try {
       const toolCall = JSON.parse(content)
       if (toolCall.tool && tools[toolCall.tool]) {
@@ -493,44 +493,44 @@ ${Object.entries(tools)
         messages.push({ role: 'assistant', content })
         messages.push({
           role: 'user',
-          content: `工具 ${toolCall.tool} 返回：${JSON.stringify(result)}\n\n请根据结果继续。`,
+          content: `Tool ${toolCall.tool} returned: ${JSON.stringify(result)}\n\nPlease continue based on the result.`,
         })
         continue
       }
     } catch {
-      // 不是工具调用，就是最终结果
+      // Not a tool call — it's the final result
     }
 
     return content
   }
 
-  return '任务执行超时'
+  return 'Task execution timed out'
 }
 ```
 
-### Function Calling（更可靠的 Agent 模式）
+### Function Calling (A More Reliable Agent Pattern)
 
-上面的 JSON 解析方式不够可靠。OpenAI 的 Function Calling 提供了原生支持：
+The JSON-parsing approach above isn't reliable. OpenAI's Function Calling provides native support:
 
 ```typescript
-// 使用 OpenAI Function Calling
+// Using OpenAI Function Calling
 const response = await openai.chat.completions.create({
   model: 'gpt-4o',
   messages: [
-    { role: 'system', content: '你是一个数据分析助手。' },
-    { role: 'user', content: '查询上个月的销售数据，分析增长趋势，然后发邮件给团队' },
+    { role: 'system', content: 'You are a data analysis assistant.' },
+    { role: 'user', content: 'Query last month\'s sales data, analyze growth trends, and send an email to the team' },
   ],
   tools: [
     {
       type: 'function',
       function: {
         name: 'querySalesData',
-        description: '查询销售数据',
+        description: 'Query sales data',
         parameters: {
           type: 'object',
           properties: {
-            startDate: { type: 'string', description: '开始日期 YYYY-MM-DD' },
-            endDate: { type: 'string', description: '结束日期 YYYY-MM-DD' },
+            startDate: { type: 'string', description: 'Start date YYYY-MM-DD' },
+            endDate: { type: 'string', description: 'End date YYYY-MM-DD' },
           },
           required: ['startDate', 'endDate'],
         },
@@ -540,7 +540,7 @@ const response = await openai.chat.completions.create({
       type: 'function',
       function: {
         name: 'analyzeTrend',
-        description: '分析数据趋势',
+        description: 'Analyze data trends',
         parameters: {
           type: 'object',
           properties: {
@@ -554,7 +554,7 @@ const response = await openai.chat.completions.create({
       type: 'function',
       function: {
         name: 'sendEmail',
-        description: '发送邮件',
+        description: 'Send an email',
         parameters: {
           type: 'object',
           properties: {
@@ -570,102 +570,102 @@ const response = await openai.chat.completions.create({
   tool_choice: 'auto',
 })
 
-// 处理工具调用
+// Handle tool calls
 const toolCalls = response.choices[0].message.tool_calls
 for (const call of toolCalls) {
   const args = JSON.parse(call.function.arguments)
   switch (call.function.name) {
     case 'querySalesData':
-      // 执行查询
+      // Execute query
       break
     case 'analyzeTrend':
-      // 执行分析
+      // Execute analysis
       break
     case 'sendEmail':
-      // 发送邮件
+      // Send email
       break
   }
 }
 ```
 
-### Multi-Agent 模式
+### Multi-Agent Patterns
 
-对于复杂任务，单一 Agent 难以胜任。Multi-Agent 模式将任务分解给多个 specialized agent：
+For complex tasks, a single agent might not cut it. Multi-agent patterns delegate to multiple specialized agents:
 
 ```typescript
-// Multi-Agent 架构示例
+// Multi-Agent architecture example
 class MultiAgentSystem {
   private agents = {
     researcher: new Agent({
-      role: '研究员',
+      role: 'Researcher',
       tools: [webSearch, readUrl],
       model: 'gpt-4o',
     }),
     writer: new Agent({
-      role: '写手',
+      role: 'Writer',
       tools: [writeFile, searchKnowledge],
       model: 'gpt-4o',
     }),
     reviewer: new Agent({
-      role: '审查员',
+      role: 'Reviewer',
       tools: [codeReview, spellCheck],
       model: 'gpt-4o-mini',
     }),
     coordinator: new Agent({
-      role: '协调员',
+      role: 'Coordinator',
       tools: [],
       model: 'gpt-4o',
     }),
   }
 
   async executeTask(task: string) {
-    // 协调员分解任务
+    // Coordinator breaks down the task
     const subtasks = await this.agents.coordinator.decompose(task)
 
     for (const subtask of subtasks) {
-      // 根据任务类型分配给对应 agent
+      // Assign to the right agent based on task type
       const agent = this.selectAgent(subtask.type)
       const result = await agent.execute(subtask.description)
 
-      // 审查员检查结果
+      // Reviewer checks the result
       const review = await this.agents.reviewer.review(result)
       if (!review.passed) {
-        // 如果不通过，重做
+        // Redo if it doesn't pass
         const revised = await agent.execute(
-          `${subtask.description}\n\n审查意见：${review.feedback}`
+          `${subtask.description}\n\nReview feedback: ${review.feedback}`
         )
-        // 更新结果
+        // Update the result
         subtask.result = revised
       } else {
         subtask.result = result
       }
     }
 
-    // 协调员汇总结果
+    // Coordinator synthesizes the results
     return await this.agents.coordinator.synthesize(subtasks)
   }
 }
 ```
 
-## 生产部署注意事项
+## Production Deployment Considerations
 
-### Latency 控制
+### Latency Control
 
 ```typescript
-// 1. 流式输出（Streaming）
+// 1. Streaming output
 const stream = await openai.chat.completions.create({
   model: 'gpt-4o-mini',
   messages,
-  stream: true,  // 开启流式输出
+  stream: true,  // Enable streaming
 })
 
 for await (const chunk of stream) {
   const content = chunk.choices[0]?.delta?.content || ''
-  // 逐块发送给客户端
+  // Send chunks to the client
   response.write(`data: ${JSON.stringify({ content })}\n\n`)
 }
 
-// 2. 缓存常见问题
+// 2. Cache common queries
 const cache = new Map<string, string>()
 
 async function cachedAnswer(query: string) {
@@ -679,75 +679,75 @@ async function cachedAnswer(query: string) {
 }
 ```
 
-### Cost 控制
+### Cost Control
 
-| 策略 | 效果 | 实现方式 |
-|------|------|----------|
-| 模型分层 | 简单问题用便宜模型 | 用分类器判断问题复杂度 |
-| 缓存 | 减少重复调用 | Redis 缓存 + 语义缓存 |
-| Prompt 压缩 | 减少 token 消耗 | 去除无关上下文 |
-| Batch 处理 | 非实时任务批量调用 | 攒够一批再调用 API |
-| RAG 前置过滤 | 减少 LLM 调用 | 先检索，无结果才调 LLM |
+| Strategy | Effect | Implementation |
+|----------|--------|----------------|
+| Model tiering | Use cheaper models for simple questions | Use a classifier to judge question complexity |
+| Caching | Reduce repeated calls | Redis cache + semantic cache |
+| Prompt compression | Reduce token usage | Remove irrelevant context |
+| Batch processing | Batch non-realtime tasks | Accumulate a batch before calling the API |
+| Pre-LLM filtering via RAG | Reduce LLM calls | Retrieve first; only call LLM if no results |
 
-### Hallucination 控制
+### Hallucination Control
 
 ```typescript
-// 1. 事实核查
+// 1. Fact checking
 async function factCheck(response: string, context: string[]) {
   const check = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {
         role: 'system',
-        content: `检查以下回答是否完全基于提供的上下文。如果回答包含上下文之外的信息，指出具体哪些内容。`,
+        content: `Check whether the following answer is fully grounded in the provided context. If the answer contains information beyond the context, point out which parts.`,
       },
       {
         role: 'user',
-        content: `上下文：${context.join('\n')}\n\n回答：${response}`,
+        content: `Context: ${context.join('\n')}\n\nAnswer: ${response}`,
       },
     ],
   })
   return check.choices[0].message.content
 }
 
-// 2. 置信度评分
+// 2. Confidence scoring
 async function answerWithConfidence(query: string, context: string[]) {
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {
         role: 'system',
-        content: `基于上下文回答问题。在回答末尾，用 1-5 分评估你的回答的置信度。
-格式：回答内容\n\n置信度：X/5`,
+        content: `Answer the question based on the context. At the end, rate your confidence on a 1-5 scale.
+Format: answer content\n\nConfidence: X/5`,
       },
-      { role: 'user', content: `上下文：${context.join('\n')}\n\n问题：${query}` },
+      { role: 'user', content: `Context: ${context.join('\n')}\n\nQuestion: ${query}` },
     ],
   })
   return response.choices[0].message.content
 }
 ```
 
-## 开源工具链推荐
+## Open-Source Tool Recommendations
 
-| 工具 | 用途 | 推荐理由 |
-|------|------|----------|
-| LangChain | Agent 框架 | 生态最大、文档最全 |
-| LlamaIndex | RAG 框架 | 数据连接器最丰富 |
-| Vercel AI SDK | 前端集成 | 流式输出、Function Calling 原生支持 |
-| Dify | 可视化编排 | 适合非开发者快速搭建 |
-| Flowise | 低代码 Agent | 拖拽式 Agent 构建 |
-| Chroma | 向量数据库 | 轻量级、本地运行 |
+| Tool | Use Case | Why Recommend |
+|------|----------|---------------|
+| LangChain | Agent framework | Largest ecosystem, most docs |
+| LlamaIndex | RAG framework | Richest set of data connectors |
+| Vercel AI SDK | Frontend integration | Native streaming, Function Calling support |
+| Dify | Visual orchestration | Great for non-developers to build quickly |
+| Flowise | Low-code Agent | Drag-and-drop Agent builder |
+| Chroma | Vector database | Lightweight, runs locally |
 
-## 总结
+## Summary
 
-LLM 应用开发的三个层次是递进的：
+The three layers of LLM app development are progressive:
 
-1. **Prompt 工程**是基础——连 Prompt 都写不好，后面都是空中楼阁。掌握角色设定、结构化指令、Few-shot、Chain-of-Thought 这些基本功。
-2. **RAG 架构**是核心——大多数生产级 LLM 应用都需要接入私有知识。Chunking 策略、Embedding 选择、检索优化是关键。
-3. **Agent 模式**是进阶——让 LLM 从"回答问题"进化到"执行任务"。Function Calling 是最可靠的 Agent 实现方式。
+1. **Prompt Engineering** is the foundation — if you can't write good prompts, everything else is a house of cards. Master the fundamentals: role assignment, structured instructions, few-shot examples, and chain-of-thought.
+2. **RAG Architecture** is the core — most production LLM apps need access to private knowledge. Chunking strategy, embedding selection, and retrieval optimization are the key levers.
+3. **Agent Patterns** are the advanced tier — evolving the LLM from "answering questions" to "executing tasks." Function Calling is the most reliable way to implement agents.
 
-**最后一条建议：不要为了用 AI 而用 AI。** 先想清楚你的用户真正需要什么，再选择合适的技术方案。有时候，一个简单的 if-else 规则比 GPT-4 更可靠、更便宜。
+**One last piece of advice: don't use AI for the sake of using AI.** Figure out what your users actually need first, then pick the right technical approach. Sometimes, a simple if-else rule is more reliable and cheaper than GPT-4.
 
 ---
 
-*你在 LLM 应用开发中遇到过什么坑？有什么独到的经验？欢迎在评论区分享。*
+*What pitfalls have you hit while building LLM apps? Any hard-won insights? Share them in the comments.*

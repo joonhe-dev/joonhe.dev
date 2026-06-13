@@ -3,11 +3,11 @@ import { siteConfig } from "@/lib/site";
 import { generateSeoMeta } from "@/lib/seo";
 
 export const metadata: Metadata = generateSeoMeta({
-  title: "About - 关于 Joonhe",
+  title: "About - Joonhe",
   description:
-    "8 年全栈开发经验的全栈开发者与独立创作者。从大厂到独立开发者，公开构建过程、分享 AI 辅助编程与 Web 开发实战经验。",
+    "Full-stack developer with 8 years of experience. From big tech to indie maker — building in public, sharing AI-assisted programming and web development insights.",
   slug: "about",
-  keywords: ["全栈开发者", "独立开发者", "AI 编程", "开源", "远程工作"],
+  keywords: ["full-stack developer", "indie maker", "AI programming", "open source", "remote work"],
 });
 
 export default function AboutPage() {
@@ -17,7 +17,7 @@ export default function AboutPage() {
 
       <div className="mt-8 space-y-6 text-zinc-600 dark:text-zinc-400">
         <p>
-          8 年全栈开发经验，从大厂到独立开发者。现在一边写代码，一边把踩过的坑、做出来的东西、赚到的钱（和亏掉的）都公开分享。
+          Full-stack developer with 8 years of experience, from big tech to indie maker. Now I write code, share my learnings, the things I&apos;ve built, and the money I&apos;ve made (and lost) — all out in the open.
         </p>
 
         <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
@@ -52,7 +52,7 @@ export default function AboutPage() {
           Philosophy
         </h2>
         <p>
-          Build in Public — 不藏着掖着，公开构建过程、数据、决策逻辑。
+          Build in Public — no hiding, no gatekeeping. Process, data, and decision-making — all out in the open.
         </p>
       </div>
     </div>

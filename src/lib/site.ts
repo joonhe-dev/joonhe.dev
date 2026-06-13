@@ -4,10 +4,10 @@ export const siteConfig = {
   name: "Joonhe.dev",
   title: "Joonhe.dev - Full-Stack Developer & Indie Maker",
   description:
-    "全栈开发者 Joonhe 的个人网站。分享 AI 辅助编程、Web 开发最佳实践、开源项目经验、独立开发者生存指南。",
+    "Full-stack developer & indie maker. Sharing AI-assisted programming, web development best practices, open-source project experience, and the indie hacker survival guide.",
   url: "https://joonhe.dev",
   author: "Joonhe",
-  locale: "zh_CN",
+  locale: "en_US",
   links: {
     twitter: "https://twitter.com/joonhe_dev",
     github: "https://github.com/joonhe-dev",
@@ -20,29 +20,29 @@ export const siteConfig = {
     email: "mailto:hello@joonhe.dev",
   },
   verification: {
-    google: "", // TODO: 替换为 Google Search Console 验证码
-    bing: "", // TODO: 替换为 Bing Webmaster 验证码
+    google: "", // TODO: Replace with Google Search Console verification code
+    bing: "", // TODO: Replace with Bing Webmaster verification code
   },
   categories: [
     {
       id: "ai-programming",
-      name: "AI 编程",
-      description: "AI 辅助编程实战经验与技巧",
+      name: "AI Programming",
+      description: "Practical experience and tips for AI-assisted programming",
     },
     {
       id: "web-development",
-      name: "Web 开发",
-      description: "Web 开发最佳实践与技术分享",
+      name: "Web Development",
+      description: "Web development best practices and technical insights",
     },
     {
       id: "open-source",
-      name: "开源",
-      description: "开源项目经验与工具链搭建",
+      name: "Open Source",
+      description: "Open-source project experience and toolchain setup",
     },
     {
       id: "remote-work",
-      name: "远程工作",
-      description: "远程工作者效率工具与心得",
+      name: "Remote Work",
+      description: "Productivity tools and insights for remote workers",
     },
   ],
 } as const;
@@ -55,17 +55,17 @@ export const baseMetadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "AI 编程",
-    "Web 开发",
-    "全栈开发",
-    "独立开发者",
-    "开源",
+    "AI Programming",
+    "Web Development",
+    "Full-Stack Development",
+    "Indie Maker",
+    "Open Source",
     "AI Code Review",
     "Next.js",
     "TypeScript",
     "React",
-    "前端开发",
-    "开发者博客",
+    "Frontend Development",
+    "Developer Blog",
   ],
   openGraph: {
     type: "website",

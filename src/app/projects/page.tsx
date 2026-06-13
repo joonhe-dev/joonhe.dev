@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { generateSeoMeta } from "@/lib/seo";
 
 export const metadata: Metadata = generateSeoMeta({
-  title: "Projects - 开源与独立项目",
+  title: "Projects - Open Source & Indie Projects",
   description:
-    "Joonhe 的开源项目与独立开发作品集。涵盖 AI 工具、Web 应用、开发者工具等多个领域，所有项目均公开构建过程。",
+    "Joonhe's open-source projects and indie dev portfolio. Covering AI tools, web applications, developer utilities, and more — all built in public.",
   slug: "projects",
-  keywords: ["开源项目", "独立开发", "AI 工具", "Web 应用", "开发者工具"],
+  keywords: ["open source projects", "indie dev", "AI tools", "web apps", "developer tools"],
 });
 
 interface Project {
@@ -21,7 +21,7 @@ const projects: Project[] = [
   {
     title: "AI Code Review Bot",
     description:
-      "基于 LLM 的自动化 Code Review 工具，集成 GitHub Webhook，自动审查 PR 中的代码质量、安全漏洞和最佳实践。支持自定义审查规则和多种 AI 模型后端。",
+      "An LLM-powered automated code review tool integrated with GitHub Webhooks. Reviews PRs for code quality, security vulnerabilities, and best practices. Supports custom review rules and multiple AI model backends.",
     techStack: ["TypeScript", "Node.js", "OpenAI API", "GitHub API", "Docker"],
     github: "https://github.com/joonhe-dev/ai-code-review-bot",
     status: "active",
@@ -29,7 +29,7 @@ const projects: Project[] = [
   {
     title: "DevToolkit",
     description:
-      "全栈开发者日常工具集合，包括 JSON 格式化、正则测试、Base64 编解码、时间戳转换、颜色选择器等。纯前端实现，无后端依赖，支持 PWA 离线使用。",
+      "A collection of everyday tools for full-stack developers — JSON formatter, regex tester, Base64 encoder/decoder, timestamp converter, color picker, and more. Pure frontend, no backend required, PWA-enabled for offline use.",
     techStack: ["React", "Next.js", "TailwindCSS", "PWA"],
     github: "https://github.com/joonhe-dev/devtoolkit",
     status: "active",
@@ -37,7 +37,7 @@ const projects: Project[] = [
   {
     title: "Remote Work Hub",
     description:
-      "远程工作者效率资源聚合站。收录全球远程工作机会、时区转换工具、远程协作最佳实践、以及远程团队管理经验分享。",
+      "A curated resource hub for remote workers. Aggregates global remote job opportunities, timezone conversion tools, remote collaboration best practices, and remote team management insights.",
     techStack: ["Next.js", "MDX", "Supabase", "Vercel"],
     github: "https://github.com/joonhe-dev/remote-work-hub",
     status: "active",
@@ -45,7 +45,7 @@ const projects: Project[] = [
   {
     title: "Prompt Library",
     description:
-      "AI Prompt 工程模板库，收录 Web 开发各场景下的高质量 Prompt 模板。支持分类浏览、搜索和社区贡献，帮助开发者写出更好的 AI Prompt。",
+      "A curated collection of AI prompt engineering templates for web development scenarios. Supports category browsing, search, and community contributions to help developers write better AI prompts.",
     techStack: ["TypeScript", "React", "PostgreSQL", "Redis"],
     github: "https://github.com/joonhe-dev/prompt-library",
     status: "active",
@@ -57,7 +57,7 @@ export default function ProjectsPage() {
     <div>
       <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        开源项目与独立开发作品集。所有项目均公开构建过程。
+        Open-source projects and indie dev portfolio. All built in public.
       </p>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">

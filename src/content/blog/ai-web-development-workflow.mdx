@@ -1,182 +1,184 @@
 ---
-title: "AI 辅助 Web 开发实战：从 Prompt 到生产的最佳工作流"
+title: "AI-Assisted Web Development in Practice: From Prompt to Production"
 slug: ai-web-development-workflow
-excerpt: "每天用 AI 写代码，但你真的用对了吗？本文分享我在 Web 开发中使用 AI 的真实工作流，从 Prompt 技巧到代码审查，从原型设计到生产部署。"
+excerpt: "You use AI to write code every day, but are you really doing it right? In this post, I share my real-world AI workflow for web development—from prompt techniques to code review, from prototyping to production deployment."
 date: "2026-06-12"
-tags: ["AI 编程", "Web 开发", "工作流", "最佳实践", "效率"]
+tags: ["AI Coding", "Web Development", "Workflow", "Best Practices", "Productivity"]
 ---
 
-## 引言：AI 时代的 Web 开发，到底变了什么？
+## Intro: What's Really Changed in Web Development in the AI Era?
 
-2024-2026 年，Web 开发的效率发生了质变。不是因为你写得快了 20%，而是因为 AI 帮你**省掉了 80% 的重复劳动**。
+Between 2024 and 2026, web development productivity had a qualitative leap. Not because you write 20% faster—but because AI **eliminates 80% of the repetitive grunt work**.
 
-但我也看到很多开发者用 AI 的方式是错的——把 AI 当搜索引擎，问一句答一句，代码复制粘贴就跑。结果呢？代码质量参差不齐，出了问题不知道怎么修，修了又引入新 bug。
+But I've also seen a lot of developers using AI the wrong way—treating it like a search engine, asking one question at a time, copy-pasting the code and running it. The result? Code quality is all over the place, you don't know how to fix things when they break, and your fixes introduce new bugs.
 
-这篇文章不讲虚的，直接分享我**每天在用的 AI Web 开发工作流**。
+This post isn't about theory. I'm sharing the **AI web development workflow I actually use every day**.
 
-## 一、AI 辅助 Web 开发：我的完整工作流
+## 1. AI-Assisted Web Development: My Complete Workflow
 
-### 1.1 需求分析阶段：用 AI 做方案调研
+### 1.1 Requirements Analysis: Using AI for Research
 
-在写任何代码之前，先用 AI 做技术选型和方案对比。
+Before writing any code, I use AI for tech stack evaluation and solution comparison.
 
-**实战案例：** 我需要为一个 SaaS 项目选择前端状态管理方案。
-
-```
-我的 Prompt：
-"我正在开发一个多租户 SaaS 管理后台，技术栈 Next.js 16 + TypeScript + Tailwind。
-需要管理用户会话、租户配置、实时通知等全局状态。
-请帮我对比 Zustand、Jotai、Redux Toolkit 在这个场景下的优劣势，
-重点考虑：TypeScript 类型推导、SSR 兼容性、学习曲线、包体积。"
-```
-
-AI 给出的对比帮我直接排除了 Redux Toolkit（太重），选择了 Zustand（轻量 + 类型安全 + SSR 友好）。**省了我至少半天调研时间。**
-
-### 1.2 原型开发阶段：AI 生成骨架代码
-
-有了方案后，让 AI 生成初始代码骨架。
-
-**关键技巧：** 不要一次性让 AI 生成整个页面。**按模块拆分**，每个模块给足上下文。
+**Real-world example:** I needed to choose a state management solution for a SaaS project.
 
 ```
-❌ 错误： "帮我写一个完整的电商后台"
-✅ 正确： "帮我写一个 ProductTable 组件，接收 Product[] 数据，
-   支持排序、筛选、分页。UI 用 Tailwind，类型定义如下：..."
+My Prompt:
+"I'm building a multi-tenant SaaS admin dashboard, tech stack Next.js 16 + TypeScript + Tailwind.
+Need to manage global state for user sessions, tenant configs, real-time notifications, etc.
+Help me compare Zustand, Jotai, and Redux Toolkit for this scenario,
+focusing on: TypeScript type inference, SSR compatibility, learning curve, bundle size."
 ```
 
-### 1.3 迭代优化阶段：让 AI 做 Code Review
+The comparison from AI helped me immediately rule out Redux Toolkit (too heavy) and go with Zustand (lightweight + type-safe + SSR-friendly). **Saved me at least half a day of research.**
 
-代码写完后，让 AI 做第一轮 review：
+### 1.2 Prototyping: AI Generates Skeleton Code
 
-```
-"请 review 以下代码，检查：
-1. 有没有类型安全问题
-2. 有没有潜在的性能问题
-3. 有没有更好的实现方式
-4. 错误处理是否完善"
-```
+Once I have a plan, I let AI generate the initial code skeleton.
 
-这一步经常能发现我忽略的边界情况。
-
-### 1.4 测试阶段：AI 生成测试用例
+**Key technique:** Don't ask AI to generate an entire page at once. **Break it down by module**, and give each module enough context.
 
 ```
-"基于以下组件，生成 Jest 测试用例：
-- 正常渲染
-- 空数据状态
-- 加载状态
-- 错误状态
-- 边界值测试"
+❌ Wrong: "Build me a complete e-commerce dashboard"
+✅ Right: "Build a ProductTable component that accepts Product[] data,
+   supports sorting, filtering, and pagination. Use Tailwind for styling,
+   type definitions are as follows:..."
 ```
 
-## 二、Web 开发中 AI Prompt 的黄金法则
+### 1.3 Iteration & Optimization: Let AI Do Code Review
 
-### 2.1 给 AI 一个"角色"
-
-```
-你是一个资深前端工程师，专精 React/Next.js 性能优化。
-请 review 以下组件，找出性能瓶颈...
-```
-
-设定角色后，AI 的回答质量明显提升。
-
-### 2.2 提供完整的上下文
+After writing the code, I have AI do the first round of review:
 
 ```
-项目：Next.js 16 SaaS 平台
-技术栈：TypeScript, Tailwind, Prisma (MySQL), Zustand
-当前文件：src/components/products/ProductTable.tsx
-问题：表格渲染 500 行数据时卡顿
+"Please review the following code and check for:
+1. Type safety issues
+2. Potential performance issues
+3. Better implementation approaches
+4. Whether error handling is comprehensive"
 ```
 
-上下文越完整，AI 给出的方案越精准。
+This step frequently catches edge cases I've overlooked.
 
-### 2.3 要求 AI 给出多个方案
-
-```
-"请给出三种实现方案，并对比各自的：
-- 复杂度
-- 性能
-- 可维护性
-- 适用场景"
-```
-
-### 2.4 迭代追问
+### 1.4 Testing: AI Generates Test Cases
 
 ```
-你： "帮我写一个搜索组件"
-AI： [给出基础实现]
-你： "能不能加上防抖？"
-AI： [优化版本]
-你： "如果搜索结果来自多个 API，怎么合并？"
-AI： [更完善的方案]
+"Based on the following component, generate Jest test cases for:
+- Normal rendering
+- Empty data state
+- Loading state
+- Error state
+- Boundary value testing"
 ```
 
-**不要接受 AI 的第一个答案。** 好的代码是迭代出来的。
+## 2. The Golden Rules of AI Prompts for Web Development
 
-## 三、实战案例：用 AI 开发一个完整的搜索组件
-
-### Step 1: 需求描述
+### 2.1 Give AI a "Role"
 
 ```
-"我需要一个搜索组件，功能：
-1. 输入关键词，300ms 防抖后发起请求
-2. 显示加载状态
-3. 显示搜索结果列表
-4. 支持键盘导航（上下键选择，回车跳转）
-5. 点击外部关闭下拉
-6. 空结果提示
-7. 错误状态处理"
+You are a senior frontend engineer specializing in React/Next.js performance optimization.
+Please review the following component and identify performance bottlenecks...
 ```
 
-### Step 2: AI 生成第一版
+Setting a role noticeably improves the quality of AI's responses.
 
-AI 生成了一个基础的 SearchBox 组件，包含防抖、加载状态、结果列表。
-
-### Step 3: 人工 review + 追问
+### 2.2 Provide Complete Context
 
 ```
-"这个实现中，如果用户在快速输入时，上一次请求还没返回就发起了下一次请求，
-会不会有竞态条件？怎么处理？"
+Project: Next.js 16 SaaS platform
+Tech stack: TypeScript, Tailwind, Prisma (MySQL), Zustand
+Current file: src/components/products/ProductTable.tsx
+Problem: Table stutters when rendering 500 rows
 ```
 
-AI 补充了 AbortController 取消上一次请求的逻辑。
+The more complete the context, the more precise AI's solution will be.
 
-### Step 4: 最终代码
+### 2.3 Ask AI for Multiple Solutions
+
+```
+"Give me three implementation approaches and compare them on:
+- Complexity
+- Performance
+- Maintainability
+- Best use cases"
+```
+
+### 2.4 Iterate and Follow Up
+
+```
+You: "Build me a search component"
+AI: [provides basic implementation]
+You: "Can you add debounce?"
+AI: [optimized version]
+You: "What if search results come from multiple APIs, how do we merge them?"
+AI: [more complete solution]
+```
+
+**Don't accept AI's first answer.** Good code comes from iteration.
+
+## 3. Real-World Case Study: Building a Complete Search Component with AI
+
+### Step 1: Describe the Requirements
+
+```
+"I need a search component with the following features:
+1. Input keywords, fire request after 300ms debounce
+2. Show loading state
+3. Display search results list
+4. Support keyboard navigation (arrow keys to select, Enter to navigate)
+5. Close dropdown on outside click
+6. Empty result message
+7. Error state handling"
+```
+
+### Step 2: AI Generates the First Version
+
+AI generated a basic SearchBox component with debounce, loading state, and results list.
+
+### Step 3: Manual Review + Follow-Up Questions
+
+```
+"In this implementation, if the user types quickly and the previous request
+hasn't returned yet before the next one fires, could there be a race condition?
+How should we handle it?"
+```
+
+AI added AbortController logic to cancel the previous request.
+
+### Step 4: Final Code
 
 ```typescript
-// 最终版本：包含防抖、竞态处理、键盘导航、点击外部关闭
-// 代码质量比第一版提升了 3 倍
+// Final version: includes debounce, race condition handling, keyboard navigation, outside click close
+// Code quality improved 3x compared to the first version
 ```
 
-**整个过程耗时：** 30 分钟（纯手写至少 2 小时）
+**Total time spent:** 30 minutes (writing from scratch would take at least 2 hours)
 
-## 四、AI 辅助 Web 开发的常见陷阱
+## 4. Common Pitfalls of AI-Assisted Web Development
 
-### 陷阱 1：AI 生成的代码可能用不存在的 API
+### Pitfall 1: AI May Generate Code with Non-existent APIs
 
-AI 有时会"幻觉"出一些不存在的 API 或库。**永远不要直接信任 AI 生成的代码**，尤其是第三方库的 API 调用。
+AI sometimes "hallucinates" APIs or libraries that don't exist. **Never blindly trust AI-generated code**, especially third-party library API calls.
 
-### 陷阱 2：AI 不理解你的项目架构
+### Pitfall 2: AI Doesn't Understand Your Project Architecture
 
-AI 不知道你的项目里有什么工具函数、自定义 hook、已有的组件库。所以生成的代码可能和你的项目风格不一致。
+AI doesn't know about your utility functions, custom hooks, or existing component library. So the generated code may not align with your project's conventions.
 
-**解决方案：** 把项目的关键代码片段作为上下文提供给 AI。
+**Solution:** Provide key code snippets from your project as context to AI.
 
-### 陷阱 3：AI 生成的代码可能不安全
+### Pitfall 3: AI-Generated Code May Be Insecure
 
-SQL 注入、XSS、CSRF——AI 不会自动考虑安全问题。**安全审查必须人工做。**
+SQL injection, XSS, CSRF—AI won't automatically consider security issues. **Security review must be done manually.**
 
-## 五、总结：我的 AI Web 开发效率公式
+## 5. Wrap-Up: My AI Web Development Productivity Formula
 
 ```
-效率提升 = (AI 生成速度 × 迭代次数) - (人工审查时间 + 修复 AI 错误的时间)
+Productivity Gain = (AI generation speed × iteration count) - (manual review time + time fixing AI errors)
 ```
 
-**关键结论：**
-- AI 帮你**加速**，但**不能替代**你的判断
-- 给 AI 越多的上下文，它给你的答案越好
-- Code Review 不能省，但可以让 AI 做第一道把关
-- **迭代追问**是 AI 编程的核心技能
+**Key takeaways:**
+- AI **accelerates** your work, but **can't replace** your judgment
+- The more context you give AI, the better answers you get
+- Code review is non-negotiable, but you can let AI handle the first pass
+- **Iterative follow-up questions** are the core skill of AI-assisted coding
 
-*这篇文章会持续更新。如果你有更好的 AI Web 开发实践，欢迎在评论区分享。*
+*This post will be continuously updated. If you have better AI web development practices, feel free to share in the comments.*
