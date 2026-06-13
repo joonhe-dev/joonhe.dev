@@ -79,6 +79,30 @@ export const posts: PostMeta[] = [
     date: "2026-06-21",
     tags: ["开源", "社区运营", "GitHub", "开发者关系"],
   },
+  {
+    slug: "keyboard-remapping-ctrl-win-swap",
+    title: "Ctrl 与 Win 键互换实战：跨平台开发者的键盘一致性指南",
+    excerpt:
+      "在 macOS 和 Windows 之间切换，最痛苦的莫过于 Ctrl 和 Win 键的位置差异。本文从虚拟键码原理出发，详解 PowerToys Keyboard Manager 的配置方法，帮你找回统一的肌肉记忆。",
+    date: "2026-06-14",
+    tags: ["开发实践", "效率", "Windows", "键盘映射"],
+  },
+  {
+    slug: "powertoys-developer-productivity-toolbox",
+    title: "PowerToys 深度指南：Windows 开发者的效率工具箱",
+    excerpt:
+      "大多数人装了 PowerToys 只用了 Keyboard Manager。但这个微软官方工具箱里藏着至少 6 个让开发者效率翻倍的模块——FancyZones 分屏、Run 快捷启动、AlwaysOnTop 置顶、Color Picker 取色……本文带你逐一解锁。",
+    date: "2026-06-16",
+    tags: ["开发者工具", "效率", "Windows", "PowerToys"],
+  },
+  {
+    slug: "cross-platform-keyboard-consistency",
+    title: "跨平台键盘一致性策略：让肌肉记忆不再分裂",
+    excerpt:
+      "在 macOS、Windows、Linux 三个系统间切换，键盘是最小却最持久的摩擦点。本文提出「固件层 + 系统层 + 应用层」三层一致性架构，帮你从硬件到软件实现全链路键位统一。",
+    date: "2026-06-18",
+    tags: ["开发实践", "效率", "跨平台", "键盘映射"],
+  },
 ];
 
 /** Get all unique tags with post counts */

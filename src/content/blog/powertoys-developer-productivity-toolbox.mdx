@@ -1,0 +1,265 @@
+---
+title: "PowerToys 深度指南：Windows 开发者的效率工具箱"
+slug: powertoys-developer-productivity-toolbox
+excerpt: "大多数人装了 PowerToys 只用了 Keyboard Manager。但这个微软官方工具箱里藏着至少 6 个让开发者效率翻倍的模块——FancyZones 分屏、Run 快捷启动、AlwaysOnTop 置顶、Color Picker 取色……本文带你逐一解锁。"
+date: "2026-06-16"
+tags: ["开发者工具", "效率", "Windows", "PowerToys"]
+---
+
+## 你只用了 PowerToys 的 10%
+
+上一篇文章我们用 PowerToys Keyboard Manager 互换了 Ctrl 和 Win 键。装是装了，但如果你就此停下——你只用到了 PowerToys 的冰山一角。
+
+PowerToys 目前有 **20+ 个模块**，其中至少 6 个是前端开发者的日常刚需。问题是：大多数人不知道它们能干嘛，或者开了不会配。
+
+这篇文章不是功能列表的翻译。我要从**实际开发场景**出发，告诉你每个模块解决什么问题、怎么配、配完之后你的工作流会发生什么变化。
+
+## 前端开发者必装的 6 个模块
+
+### 1. FancyZones：告别手动拖窗口
+
+**你有没有经历过这种痛苦？**
+
+左边 VS Code，右边 Chrome DevTools——手动拖窗口对齐，差 2 像素。然后打开终端，又得拖。再开个 Figma，三窗口手动排……5 分钟过去了。
+
+FancyZones 就是 Windows 上的窗口分屏管理器。类似 macOS 上的 Magnet / Rectangle，但**免费且更强大**。
+
+**核心操作**：
+- `Win+~` 打开布局编辑器
+- 按住 `Shift` 拖动窗口到目标区域
+- `Win+←/→` 快速左右分屏
+
+**我的布局方案**：
+
+```
+┌─────────┬──────────────────┐
+│         │                  │
+│ Terminal│    VS Code       │
+│  25%    │      50%         │
+│         │                  │
+│         ├──────────────────┤
+│         │   Chrome DevTools│
+│         │      25%        │
+└─────────┴──────────────────┘
+```
+
+**配置步骤**：
+1. 打开 FancyZones → Layout editor
+2. 选择 "Custom" → 创建自定义布局
+3. 设定区域数量和比例
+4. 勾选 "Override Windows Snap" 替代系统分屏
+
+**FancyZones vs macOS 工具对比**：
+
+| 功能 | FancyZones | Magnet (macOS) | Rectangle (macOS) |
+|------|-----------|-----------------|-------------------|
+| 价格 | 免费 | $4.99 | 免费 |
+| 自定义布局 | ✅ 任意分区 | ❌ 预设布局 | ❌ 预设布局 |
+| 快捷键绑定 | ✅ 每个区域独立 | ✅ | ✅ |
+| 多显示器 | ✅ | ✅ | ✅ |
+| 跨虚拟桌面 | ✅ | ❌ | ❌ |
+
+### 2. PowerToys Run：Windows 上的 Alfred
+
+`Alt+Space` 呼出，输入 anything，回车执行——这就是 Run。
+
+如果你用过 macOS 的 Alfred 或 Raycast，你懂这种体验。如果没有，试一次就回不去了。
+
+**我常用的查询场景**：
+
+```
+# 搜索文件
+docs component → 直接打开 Component.tsx
+
+# 执行计算
+= 1024 * 768 → 786432
+
+# 搜索系统命令
+env → 打开环境变量设置
+
+# 搜索进程
+node → 杀掉卡死的 Node 进程
+
+# 直接运行 Winget
+winget install → 搜索安装应用
+```
+
+**关键配置**：
+1. 打开 PowerToys Run → 设置快捷键为 `Alt+Space`（默认）
+2. 启用 "Search in Web" 插件
+3. 启用 "Windows Settings" 插件——可以直接跳转任意设置页面
+4. 启用 "Registry" 插件——搜索注册表（调试用）
+
+**Run vs macOS 工具对比**：
+
+| 功能 | PowerToys Run | Alfred | Raycast |
+|------|-------------|--------|---------|
+| 价格 | 免费 | 免费（Powerpack $34） | 免费（Pro $8/月） |
+| 文件搜索 | ✅ Windows Search | ✅ Spotlight | ✅ |
+| 计算器 | ✅ 内置 | ✅ | ✅ |
+| 插件系统 | ✅ 有限 | ✅ 丰富 | ✅ 丰富 |
+| Clipboard History | ✅ 内置 | ❌ 需 Powerpack | ✅ |
+| Window Management | ❌ | ❌ | ✅ |
+
+### 3. AlwaysOnTop：一个快捷键搞定置顶
+
+`Win+Ctrl+T` 让当前窗口始终置顶。
+
+**开发者场景**：
+- 把文档/设计稿置顶，下面写代码——不用再 Alt+Tab 来回切
+- 把终端置顶，方便随时看日志
+- 把 Postman 置顶，边调接口边写代码
+
+不需要配置，开箱即用。唯一的设置是自定义快捷键。
+
+### 4. Color Picker：前端开发者的取色器
+
+`Win+Shift+C` 呼出取色器，点击屏幕任意位置获取颜色值。
+
+**输出格式**：
+```
+HEX: #1A1A2E
+RGB: rgb(26, 26, 46)
+HSL: hsl(240, 28%, 14%)
+```
+
+**配置建议**：
+- 设置默认格式为 HEX（前端最常用）
+- 开启 "Color Picker always on top"——取色时不会被其他窗口遮挡
+- 开启 "Show color name"——显示颜色的近似名称
+
+**vs 专门取色工具**：
+
+| 工具 | 优势 | 劣势 |
+|------|------|------|
+| PowerToys Color Picker | 免费、轻量、集成 | 格式有限 |
+| ColorZilla (Chrome) | 浏览器内取色 | 只限浏览器 |
+| sip (macOS) | 功能强大 | $9.99 |
+
+### 5. File Locksmith：谁占了我的文件？
+
+```
+无法删除 xxx.js：此文件已在另一程序中打开。
+```
+
+遇到这种报错，传统做法是：关所有程序 → 还是不行 → 重启 → 还是报错 → 暴力删除。
+
+File Locksmith 一键解决：右键文件 → "Unlock with File Locksmith" → 看到是哪个进程占用 → 直接结束该进程。
+
+**使用场景**：
+- `npm run dev` 卡死，删不掉 node_modules
+- VS Code 占用了某个文件不让删
+- Excel 占用了 CSV 文件不让覆盖
+
+### 6. Peek：快速预览，不用打开
+
+选中文件 → `Ctrl+Space` → 弹出预览窗口。
+
+支持的文件类型：图片、Markdown、代码文件、PDF、文本、视频。
+
+**场景**：在 10 个 `screenshot-*.png` 里找某张图——不用一个个打开，Peek 一键预览，左右箭头切换。
+
+## 进阶玩法
+
+### Keyboard Manager 不止换键
+
+上一篇我们只用了 "Remap a key"，但 Keyboard Manager 还有 **"Remap a shortcut"** 功能。
+
+**实用快捷键映射**：
+
+```json
+{
+  "remapShortcuts": {
+    "global": [
+      {
+        "originalKeys": "18;9",
+        "newRemapKeys": "91;9",
+        "operationType": 0,
+        "secondKeyOfChord": 0
+      }
+    ],
+    "appSpecific": [
+      {
+        "originalKeys": "162;192",
+        "newRemapKeys": "162;69",
+        "targetApp": "Code.exe"
+      }
+    ]
+  }
+}
+```
+
+上面两条映射做了什么：
+- 全局：`Alt+Tab`（VK 18=Alt, 9=Tab）→ `Win+Tab`（VK 91=Win），用 Win 键切换应用（更接近 macOS 的 Cmd+Tab）
+- VS Code 中：`Ctrl+`` → `Ctrl+E`，统一快速打开文件的快捷键
+
+### 应用级映射的威力
+
+`appSpecific` 让你可以为不同应用定制快捷键。这对跨平台开发者特别有用：
+
+| 应用 | 映射 | 说明 |
+|------|------|------|
+| VS Code | `Ctrl+`` → `Ctrl+E` | 统一文件跳转 |
+| Chrome | `Ctrl+L` → `F6` | 统一地址栏聚焦 |
+| Terminal | `Ctrl+Shift+T` → `Ctrl+T` | 新标签页统一 |
+| Figma | `Ctrl+Shift+K` → `Ctrl+V` | 粘贴替换 |
+
+### 高级粘贴 (Advanced Paste)
+
+`Ctrl+Shift+V` 呼出，支持：
+- 纯文本粘贴（去除格式）
+- Markdown → HTML 转换
+- 自定义粘贴转换脚本
+
+**场景**：从网页复制代码到 VS Code——`Ctrl+Shift+V` 选择 "Paste as plain text"，不会带进 HTML 格式。
+
+## 推荐的 PowerToys 配置模板
+
+以下是我实际使用的 `settings.json` 关键配置，供参考：
+
+```json
+{
+  "enabled": {
+    "FancyZones": true,
+    "Keyboard Manager": true,
+    "PowerToys Run": true,
+    "AlwaysOnTop": true,
+    "ColorPicker": true,
+    "File Locksmith": true,
+    "Peek": true,
+    "Awake": true,
+    "Image Resizer": true,
+    "Shortcut Guide": true,
+    "AdvancedPaste": true,
+    "CmdPal": true
+  }
+}
+```
+
+**关闭的模块**（没必要开）：
+- `MouseWithoutBorders`：需要多台电脑配合
+- `EnvironmentVariables`：用系统设置就行
+- `Hosts`：直接编辑 hosts 文件更直观
+- `RegistryPreview`：用 RegEdit 足够
+
+## PowerToys 不擅长什么
+
+公平地说，PowerToys 也有局限：
+
+| 需求 | PowerToys 能力 | 更好的方案 |
+|------|-------------|-----------|
+| 复杂的键盘宏 | ❌ 不支持循环/条件 | AutoHotkey |
+| 跨平台键位同步 | ❌ 仅 Windows | QMK 固件 |
+| 自动化工作流 | ❌ 不支持 | AutoHotkey / Python |
+| 多电脑共享剪贴板 | ⚠️ MouseWithoutBorders 有限 | 跨平台工具如 1Clipboard |
+| 窗口规则自动化 | ❌ 不支持 | AutoHotkey / Komorebi |
+
+## 系列预告
+
+这是「跨平台键盘适配」系列的第二篇。接下来：
+
+- **Part 3**：跨平台键盘一致性策略——让肌肉记忆不再分裂
+
+---
+
+*你用 PowerToys 的哪个模块最多？有没有发现什么隐藏玩法？欢迎在评论区分享。*
