@@ -103,6 +103,14 @@ export const posts: PostMeta[] = [
     date: "2026-06-18",
     tags: ["Dev Practices", "Productivity", "Cross-Platform", "Keyboard Remapping"],
   },
+  {
+    slug: "ai-trust-and-control",
+    title: "AI 写代码越来越厉害，但谁来理解系统？",
+    excerpt:
+      "当 AI 能搞定大部分代码实现，项目初期跑得飞快。但随着业务膨胀、if else 堆积、数据流复杂化，人对系统的掌控力开始下降。AI 时代最危险的问题，或许不是 AI 能不能写代码，而是什么东西必须由人来负责。",
+    date: "2026-06-13",
+    tags: ["AI 编程", "软件工程", "架构", "技术管理", "思考"],
+  },
 ];
 
 /** Get all unique tags with post counts */
