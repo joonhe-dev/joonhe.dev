@@ -6,31 +6,10 @@ import { generateSeoMeta } from "@/lib/seo";
 export const metadata: Metadata = generateSeoMeta({
   title: "About - Joonhe",
   description:
-    "Full-stack developer with 8 years of experience building TypeScript-powered products. From big tech to indie maker — shipping in public, sharing what works and what doesn't.",
+    "Full-stack developer and indie maker building TypeScript-powered tools in public. Focused on AI-assisted programming, developer experience, and shipping fast.",
   slug: "about",
   keywords: ["full-stack developer", "indie maker", "TypeScript", "open source", "build in public"],
 });
-
-const experience = [
-  {
-    period: "2024 – Present",
-    role: "Indie Maker & Open Source Maintainer",
-    description:
-      "Building developer tools and shipping SaaS products in public. Maintaining devhammer (npm CLI toolset) and writing about AI-assisted programming workflows.",
-  },
-  {
-    period: "2020 – 2024",
-    role: "Senior Full-Stack Engineer",
-    description:
-      "Led front-end architecture for high-traffic web applications. Designed component systems, migrated legacy codebases to TypeScript, and mentored junior developers.",
-  },
-  {
-    period: "2018 – 2020",
-    role: "Full-Stack Developer",
-    description:
-      "Built and shipped production features across the entire stack — React frontends, Node.js APIs, PostgreSQL databases. Shipped code used by millions of users daily.",
-  },
-];
 
 const techStack = [
   {
@@ -157,15 +136,6 @@ export default function AboutPage() {
               </svg>
               X (Twitter)
             </a>
-            <a
-              href={siteConfig.social.email}
-              className="inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-              </svg>
-              Email
-            </a>
           </div>
         </div>
       </div>
@@ -173,7 +143,7 @@ export default function AboutPage() {
       {/* Bio */}
       <section className="mt-10 space-y-4 text-zinc-600 dark:text-zinc-400">
         <p>
-          I&apos;m a full-stack developer who spent years in big tech writing TypeScript at scale, then left to build my own things. Now I write code, share my learnings, and ship products — all out in the open.
+          I&apos;m a full-stack developer building products and tools in public. I write code, share what I learn, and ship things — all out in the open.
         </p>
         <p>
           My sweet spot is the TypeScript ecosystem end-to-end: from Next.js frontends to Node.js APIs, from CLI tools to deployment pipelines. I care about developer experience, type safety, and shipping fast without cutting corners.
@@ -181,27 +151,6 @@ export default function AboutPage() {
         <p>
           These days I&apos;m focused on <strong className="text-zinc-900 dark:text-zinc-100">AI-assisted programming workflows</strong> — not the hype, but the practical stuff: how to prompt effectively, how to review AI-generated code, and how to build tools that make developers more productive.
         </p>
-      </section>
-
-      {/* Experience */}
-      <section className="mt-12">
-        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Experience</h2>
-        <div className="mt-6 space-y-8 border-l-2 border-zinc-200 pl-6 dark:border-zinc-800">
-          {experience.map((item) => (
-            <div key={item.period} className="relative">
-              <div className="absolute -left-[1.85rem] top-1.5 h-3 w-3 rounded-full border-2 border-indigo-500 bg-white dark:bg-zinc-950" />
-              <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                {item.period}
-              </p>
-              <h3 className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                {item.role}
-              </h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                {item.description}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* Tech Stack */}
