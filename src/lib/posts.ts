@@ -111,6 +111,14 @@ export const posts: PostMeta[] = [
     date: "2026-06-13",
     tags: ["AI 编程", "软件工程", "架构", "技术管理", "思考"],
   },
+  {
+    slug: "npm-v12-lifecycle-scripts-change",
+    title: "npm install 默认不再执行脚本：JavaScript 生态 15 年来最大的安全变革",
+    excerpt:
+      "npm v12 将于今年 7 月发布，默认禁止生命周期脚本执行。这意味着 '安装依赖 = 下载代码 + 执行代码' 这个持续了 15 年的危险设计，终于被终结了。",
+    date: "2026-06-13",
+    tags: ["npm", "JavaScript", "安全", "前端", "开源"],
+  },
 ];
 
 /** Get all unique tags with post counts */
