@@ -55,6 +55,30 @@ export const posts: PostMeta[] = [
     date: "2026-06-12",
     tags: ["开源", "工具链", "LLM", "部署"],
   },
+  {
+    slug: "one-person-tech-stack",
+    title: "一人公司的技术栈选型指南",
+    excerpt:
+      "一人公司如何用最低成本搭建技术栈？本文从实战角度出发，分享独立开发者从 MVP 到规模化各阶段的技术选型策略与成本优化方案。",
+    date: "2026-06-13",
+    tags: ["一人公司", "技术栈", "独立开发", "SaaS", "成本优化"],
+  },
+  {
+    slug: "llm-app-development-practical",
+    title: "LLM 应用开发实战：从 Prompt 到 RAG 到 Agent",
+    excerpt:
+      "LLM 应用开发的三个层次：Prompt 工程、RAG 架构、Agent 模式。本文用 TypeScript 代码示例，带你从零搭建一套生产级 LLM 应用。",
+    date: "2026-06-17",
+    tags: ["LLM", "RAG", "Agent", "AI 应用", "Prompt 工程"],
+  },
+  {
+    slug: "open-source-from-zero-to-thousand",
+    title: "开源项目从 0 到 1000 Star 的运营心得",
+    excerpt:
+      "做开源不只是写代码。本文分享一个开源项目从零到 1000 Star 的真实经历，涵盖项目定位、文档策略、社区运营、发布推广全流程。",
+    date: "2026-06-21",
+    tags: ["开源", "社区运营", "GitHub", "开发者关系"],
+  },
 ];
 
 /** Get all unique tags with post counts */
